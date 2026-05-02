@@ -1,0 +1,56 @@
+# Dependabot configuration for rehearsal-notes
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # JavaScript/Node.js dependencies (npm)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/New_York"
+    # Limit number of open PRs
+    open-pull-requests-limit: 10
+    # Group minor and patch updates together
+    groups:
+      # Production dependencies
+      production-dependencies:
+        dependency-type: "production"
+        update-types:
+          - "minor"
+          - "patch"
+      # Development dependencies
+      dev-dependencies:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+    # Reviewers for dependency updates
+    # reviewers:
+    #   - "your-github-username"
+    # Labels to add to PRs
+    labels:
+      - "dependencies"
+      - "security"
+    # Commit message configuration
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    # Ignore specific packages if needed
+    # ignore:
+    #   - dependency-name: "some-package"
+    #     update-types: ["version-update:semver-major"]
+
+  # GitHub Actions (if you add any workflows)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "ci"
