@@ -81,6 +81,12 @@ The Sheet ID you copied in Step 2.
 1aBcDeFgHiJkLmNoPqRsTuVwXyZ...
 ```
 
+### `SHARED_DRIVE_ID`
+The Google Shared Drive ID where production folders will be created. Find this in the URL when viewing the Shared Drive:
+```
+https://drive.google.com/drive/folders/SHARED_DRIVE_ID_HERE
+```
+
 ### `GOOGLE_SERVICE_ACCOUNT_EMAIL`
 Same value as your Altius Hub — `altius-qc-functions@altius-project-hub.iam.gserviceaccount.com`
 

@@ -1,8 +1,6 @@
 'use strict'
 
-const { sheetsClient, driveClient, hashPin, getRows, CORS, ok, err } = require('./_sheets')
-
-const SHARED_DRIVE_ID = '0AHO7QedLJaIHUk9PVA'
+const { sheetsClient, driveClient, hashPin, getRows, SHARED_DRIVE_ID, CORS, ok, err } = require('./_sheets')
 
 function makeInviteCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
