@@ -1,0 +1,86 @@
+# =============================================================================
+# Docker Compose - Production Configuration
+# =============================================================================
+# Runs the Ovature application with nginx reverse proxy.
+#
+# Usage:
+#   cd deploy/docker
+#   cp .env.example .env
+#   # Edit .env with your credentials
+#   docker-compose up -d
+#
+# View logs:
+#   docker-compose logs -f
+#
+# Stop services:
+#   docker-compose down
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # Application Container
+  # ---------------------------------------------------------------------------
+  app:
+    build:
+      context: ../..
+      dockerfile: deploy/docker/Dockerfile
+    container_name: ovature-app
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - GOOGLE_SERVICE_ACCOUNT_JSON=${GOOGLE_SERVICE_ACCOUNT_JSON}
+      - REGISTRY_SHEET_ID=${REGISTRY_SHEET_ID}
+      - RESEND_API_KEY=${RESEND_API_KEY:-}
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID:-}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN:-}
+      - TWILIO_FROM_NUMBER=${TWILIO_FROM_NUMBER:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - PLATFORM_ADMINS=${PLATFORM_ADMINS:-[]}
+    networks:
+      - ovature-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+  # ---------------------------------------------------------------------------
+  # Nginx Reverse Proxy
+  # ---------------------------------------------------------------------------
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    container_name: ovature-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      app:
+        condition: service_healthy
+    networks:
+      - ovature-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 64M
+
+networks:
+  ovature-network:
+    driver: bridge
