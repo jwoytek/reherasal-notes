@@ -2,11 +2,9 @@
 
 const {
   sheetsClient, driveClient, getRows, appendRows,
-  hashPin, makeProductionCode, REGISTRY_SHEET_ID, CORS, ok, err
+  hashPin, makeProductionCode, REGISTRY_SHEET_ID, SHARED_DRIVE_ID, CORS, ok, err
 } = require('./_sheets')
 const { defaultActs, migrateConfig } = require('./_actsScenes')
-
-const SHARED_DRIVE_ID = '0AHO7QedLJaIHUk9PVA'
 
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers: CORS, body: '' }

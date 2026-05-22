@@ -3,6 +3,7 @@
 const { google } = require('googleapis')
 
 const REGISTRY_SHEET_ID = process.env.REGISTRY_SHEET_ID
+const SHARED_DRIVE_ID = process.env.SHARED_DRIVE_ID
 
 function getAuth() {
   const json = process.env.GOOGLE_SERVICE_ACCOUNT_JSON
@@ -85,5 +86,5 @@ function err(msg, code = 400) {
 
 module.exports = {
   getAuth, sheetsClient, driveClient, getRows, appendRows, updateRow,
-  hashPin, makeProductionCode, CORS, ok, err, REGISTRY_SHEET_ID
+  hashPin, makeProductionCode, CORS, ok, err, REGISTRY_SHEET_ID, SHARED_DRIVE_ID
 }
