@@ -180,3 +180,135 @@ Each production gets its own Google Sheet with 3 tabs:
 **Functions returning 500** — Check Netlify function logs: Netlify → Functions → Select function → View logs.
 
 **Notes not saving** — The production sheet may not have been shared with the service account. Each production sheet is created by the service account, so it already owns it — this should not happen unless the service account key changed.
+
+---
+
+## Docker Deployment (Alternative to Netlify)
+
+The app can also run as a containerized application using Docker. This is useful for self-hosted deployments or environments where Netlify isn't available.
+
+### Architecture
+
+```
+┌─────────────────┐         ┌─────────────────────┐
+│     nginx       │         │        app          │
+│    (port 80)    │────────▶│     (port 3000)     │
+│                 │         │                     │
+│  Reverse proxy  │         │  Express + Vite     │
+│  Caching, gzip  │         │  API handlers       │
+└─────────────────┘         └─────────────────────┘
+```
+
+### Files
+
+All Docker configuration lives in `deploy/docker/`:
+
+| File | Purpose |
+|------|---------|
+| `Dockerfile` | Production app image (multi-stage build) |
+| `Dockerfile.dev` | Development app image |
+| `Dockerfile.nginx` | Nginx reverse proxy |
+| `docker-compose.yaml` | Production orchestration |
+| `docker-compose.dev.yaml` | Development with hot reload |
+| `.env.example` | Environment variable template |
+| `server.cjs` | Express wrapper for API functions |
+| `nginx/` | Nginx configuration files |
+
+### Production Deployment
+
+1. Navigate to the docker directory:
+   ```bash
+   cd deploy/docker
+   ```
+
+2. Create your environment file:
+   ```bash
+   cp .env.example .env
+   ```
+
+3. Edit `.env` with your credentials:
+   ```bash
+   # Required
+   GOOGLE_SERVICE_ACCOUNT_JSON={"type":"service_account",...}
+   REGISTRY_SHEET_ID=your-sheet-id
+
+   # Optional
+   RESEND_API_KEY=your-key
+   ANTHROPIC_API_KEY=your-key
+   ```
+
+4. Build and start the containers:
+   ```bash
+   docker-compose up -d
+   ```
+
+5. Access the app at `http://localhost`
+
+### Development Mode
+
+Development mode provides hot reload for the frontend and API:
+
+```bash
+cd deploy/docker
+cp .env.example .env
+# Edit .env with credentials
+docker-compose -f docker-compose.dev.yaml up
+```
+
+- Frontend (with HMR): `http://localhost:5173`
+- API endpoints: `http://localhost:3000/api/*`
+
+### Managing Containers
+
+```bash
+# View logs
+docker-compose logs -f
+
+# View logs for specific service
+docker-compose logs -f app
+docker-compose logs -f nginx
+
+# Stop containers
+docker-compose down
+
+# Rebuild after code changes
+docker-compose up -d --build
+
+# Full cleanup (removes images)
+docker-compose down --rmi all
+```
+
+### Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `GOOGLE_SERVICE_ACCOUNT_JSON` | Yes | Full service account JSON (single line) |
+| `REGISTRY_SHEET_ID` | Yes | Global registry spreadsheet ID |
+| `RESEND_API_KEY` | No | Email delivery via Resend |
+| `TWILIO_ACCOUNT_SID` | No | SMS via Twilio |
+| `TWILIO_AUTH_TOKEN` | No | SMS via Twilio |
+| `TWILIO_FROM_NUMBER` | No | SMS via Twilio |
+| `ANTHROPIC_API_KEY` | No | AI features (chat, lookups) |
+| `PLATFORM_ADMINS` | No | JSON array of admin emails |
+
+### Docker Troubleshooting
+
+**Container won't start** — Check logs with `docker-compose logs app`. Common issues:
+- Missing required environment variables
+- Invalid JSON in `GOOGLE_SERVICE_ACCOUNT_JSON`
+
+**API returns 404** — The function may not exist. Check available functions:
+```bash
+docker-compose exec app ls /app/netlify/functions/
+```
+
+**nginx returns 502 Bad Gateway** — The app container isn't healthy. Check:
+```bash
+docker-compose ps
+docker-compose logs app
+```
+
+**Changes not reflecting** — Rebuild the containers:
+```bash
+docker-compose up -d --build
+```
