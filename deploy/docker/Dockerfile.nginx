@@ -1,0 +1,35 @@
+# =============================================================================
+# Nginx Reverse Proxy Dockerfile
+# =============================================================================
+# Custom nginx configuration for:
+#   - Reverse proxy to app container
+#   - Static asset caching
+#   - Gzip compression
+#   - Security headers
+#
+# Usage:
+#   docker build -t ovature-nginx -f deploy/docker/Dockerfile.nginx deploy/docker
+# =============================================================================
+
+FROM nginx:1.25-alpine
+
+# Remove default nginx config
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Copy custom nginx configuration
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+
+# Create cache directory
+RUN mkdir -p /var/cache/nginx && \
+    chown -R nginx:nginx /var/cache/nginx
+
+# Expose HTTP port
+EXPOSE 80
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost/health || exit 1
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]

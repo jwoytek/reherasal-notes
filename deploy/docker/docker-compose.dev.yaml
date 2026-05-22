@@ -1,0 +1,57 @@
+# =============================================================================
+# Docker Compose - Development Configuration
+# =============================================================================
+# Development setup with:
+#   - Volume mounts for hot reload
+#   - Vite dev server (with HMR)
+#   - Debug ports exposed
+#   - No nginx (direct access to app)
+#
+# Usage:
+#   cd deploy/docker
+#   cp .env.example .env
+#   # Edit .env with your credentials
+#   docker-compose -f docker-compose.dev.yaml up
+#
+# The app will be available at http://localhost:5173
+# API endpoints at http://localhost:3000/api/*
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # Application Container - Development Mode
+  # ---------------------------------------------------------------------------
+  app:
+    build:
+      context: ../..
+      dockerfile: deploy/docker/Dockerfile.dev
+    container_name: ovature-app-dev
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - GOOGLE_SERVICE_ACCOUNT_JSON=${GOOGLE_SERVICE_ACCOUNT_JSON}
+      - REGISTRY_SHEET_ID=${REGISTRY_SHEET_ID}
+      - RESEND_API_KEY=${RESEND_API_KEY:-}
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID:-}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN:-}
+      - TWILIO_FROM_NUMBER=${TWILIO_FROM_NUMBER:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - PLATFORM_ADMINS=${PLATFORM_ADMINS:-[]}
+    volumes:
+      # Mount source for hot reload
+      - ../../src:/app/src:ro
+      - ../../netlify:/app/netlify:ro
+      - ../../public:/app/public:ro
+      - ../../index.html:/app/index.html:ro
+      - ../../vite.config.js:/app/vite.config.js:ro
+    ports:
+      # Vite dev server
+      - "5173:5173"
+      # Express API server
+      - "3000:3000"
+    networks:
+      - ovature-dev-network
+
+networks:
+  ovature-dev-network:
+    driver: bridge

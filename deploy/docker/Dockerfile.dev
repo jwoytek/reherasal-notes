@@ -1,0 +1,38 @@
+# =============================================================================
+# Ovature Application Dockerfile - Development
+# =============================================================================
+# Development image with:
+#   - Vite dev server for frontend hot reload
+#   - Express server for API functions
+#   - All dependencies installed
+#
+# Usage:
+#   docker-compose -f docker-compose.dev.yaml up
+# =============================================================================
+
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install dependencies first (better layer caching)
+COPY package*.json ./
+COPY netlify/functions/package*.json ./netlify/functions/
+RUN npm install && \
+    cd netlify/functions && npm install
+
+# Copy source files
+COPY . .
+
+# Copy the dev server script
+COPY deploy/docker/server.cjs ./server.cjs
+COPY deploy/docker/dev-runner.cjs ./dev-runner.cjs
+
+# Environment
+ENV NODE_ENV=development
+ENV PORT=3000
+
+# Expose ports for Vite and API
+EXPOSE 5173 3000
+
+# Start both Vite and Express in development mode
+CMD ["node", "dev-runner.cjs"]

@@ -9,6 +9,7 @@ build/
 .env
 .env.local
 .env.*.local
+deploy/docker/.env
 
 # Logs
 logs/
