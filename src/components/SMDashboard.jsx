@@ -102,15 +102,25 @@ export default function SMDashboard({ sheetId, productionCode, production, sessi
   })()
 
   // Poll timeline
+  const PHASE_ORDER = { preshow: 0, act1: 1, intermission: 2, act2: 3, done: 4 }
   useEffect(() => {
     async function poll() {
       if (savingTimelineRef.current) return
       const { timeline: remote, lockedBy: lb } = await getTimelineRemote(sheetId, showDate)
       if (remote) {
-        setTimeline(remote)
+        // Don't regress to an earlier phase (stale data from race condition)
+        setTimeline(prev => {
+          const prevPhase = PHASE_ORDER[prev.phase] ?? 0
+          const remotePhase = PHASE_ORDER[remote.phase] ?? 0
+          // Only apply remote if it's at least as advanced, or if it has a higher perfNum (reset)
+          if (remotePhase >= prevPhase || (remote.perfNum || 0) > (prev.perfNum || 0)) {
+            saveTimeline(sheetId, showDate, remote)
+            if (remote.reportFired) setReportFired(true)
+            return remote
+          }
+          return prev
+        })
         setLockedBy(lb || null)
-        saveTimeline(sheetId, showDate, remote)
-        if (remote.reportFired) setReportFired(true)
       }
     }
     poll()
@@ -492,33 +502,33 @@ export default function SMDashboard({ sheetId, productionCode, production, sessi
                   {reportSending ? 'Sending…' : '📧 Send report now'}
                 </button>
               </>
+            ) : reportSending || !reportResult ? (
+              <p style={{ fontSize: 13, color: 'var(--text2)', fontWeight: 500 }}>📧 Sending report...</p>
+            ) : reportResult.sent === false ? (
+              <>
+                <p style={{ fontSize: 13, color: 'var(--yellow-text)', fontWeight: 500, marginBottom: 8 }}>
+                  ⚠️ {reportResult.message || 'Report not sent'}
+                </p>
+                {reportResult.reportPreview && (
+                  <details style={{ fontSize: 12, color: 'var(--text2)' }}>
+                    <summary style={{ cursor: 'pointer', marginBottom: 8, color: 'var(--text3)' }}>View report content</summary>
+                    <pre style={{
+                      background: 'var(--bg2)',
+                      padding: '12px',
+                      borderRadius: 'var(--radius)',
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'break-word',
+                      fontSize: 11,
+                      lineHeight: 1.5,
+                      maxHeight: 300,
+                      overflowY: 'auto',
+                      margin: 0
+                    }}>{reportResult.reportPreview}</pre>
+                  </details>
+                )}
+              </>
             ) : (
-              reportResult?.sent === false ? (
-                <>
-                  <p style={{ fontSize: 13, color: 'var(--yellow-text)', fontWeight: 500, marginBottom: 8 }}>
-                    ⚠️ {reportResult.message || 'Report not sent'}
-                  </p>
-                  {reportResult.reportPreview && (
-                    <details style={{ fontSize: 12, color: 'var(--text2)' }}>
-                      <summary style={{ cursor: 'pointer', marginBottom: 8, color: 'var(--text3)' }}>View report content</summary>
-                      <pre style={{
-                        background: 'var(--bg2)',
-                        padding: '12px',
-                        borderRadius: 'var(--radius)',
-                        whiteSpace: 'pre-wrap',
-                        wordBreak: 'break-word',
-                        fontSize: 11,
-                        lineHeight: 1.5,
-                        maxHeight: 300,
-                        overflowY: 'auto',
-                        margin: 0
-                      }}>{reportResult.reportPreview}</pre>
-                    </details>
-                  )}
-                </>
-              ) : (
-                <p style={{ fontSize: 13, color: 'var(--green-text)', fontWeight: 500 }}>✅ Show report sent to SM and Director!</p>
-              )
+              <p style={{ fontSize: 13, color: 'var(--green-text)', fontWeight: 500 }}>✅ Show report sent to SM and Director!</p>
             )}
           </div>
 
