@@ -84,7 +84,83 @@ function err(msg, code = 400) {
   return { statusCode: code, headers: { ...CORS, 'Content-Type': 'application/json' }, body: JSON.stringify({ error: msg }) }
 }
 
+/**
+ * Ensures the Registry tab exists in the registry spreadsheet.
+ * - If "Registry" tab exists, returns { ok: true }
+ * - If spreadsheet has one empty tab, renames it to "Registry" and returns { ok: true, initialized: true }
+ * - Otherwise returns { ok: false, error: "..." }
+ */
+async function ensureRegistryTab(sheets) {
+  if (!REGISTRY_SHEET_ID) {
+    return { ok: false, error: 'REGISTRY_SHEET_ID environment variable is not set' }
+  }
+
+  try {
+    // Get spreadsheet metadata
+    const meta = await sheets.spreadsheets.get({ spreadsheetId: REGISTRY_SHEET_ID })
+    const sheetsList = meta.data.sheets || []
+
+    // Check if Registry tab already exists
+    const registryTab = sheetsList.find(s => s.properties.title === 'Registry')
+    if (registryTab) {
+      return { ok: true }
+    }
+
+    // No Registry tab — check if we can auto-configure
+    if (sheetsList.length === 1) {
+      const firstSheet = sheetsList[0]
+      const sheetId = firstSheet.properties.sheetId
+      const sheetTitle = firstSheet.properties.title
+
+      // Check if the sheet is empty
+      try {
+        const data = await sheets.spreadsheets.values.get({
+          spreadsheetId: REGISTRY_SHEET_ID,
+          range: `'${sheetTitle}'!A1:Z100`
+        })
+        const values = data.data.values || []
+        const hasData = values.some(row => row.some(cell => cell && cell.trim()))
+
+        if (!hasData) {
+          // Empty spreadsheet — rename the tab to "Registry"
+          await sheets.spreadsheets.batchUpdate({
+            spreadsheetId: REGISTRY_SHEET_ID,
+            requestBody: {
+              requests: [{
+                updateSheetProperties: {
+                  properties: { sheetId, title: 'Registry' },
+                  fields: 'title'
+                }
+              }]
+            }
+          })
+          return { ok: true, initialized: true }
+        }
+      } catch (e) {
+        // If we can't read the data, fall through to error
+      }
+    }
+
+    // Can't auto-configure — return helpful error
+    const tabNames = sheetsList.map(s => s.properties.title).join(', ')
+    return {
+      ok: false,
+      error: `Registry sheet is not configured correctly. Expected a tab named "Registry" but found: ${tabNames}. ` +
+             `Either rename an existing tab to "Registry", or use an empty spreadsheet which will be configured automatically.`
+    }
+  } catch (e) {
+    if (e.code === 404 || e.message?.includes('not found')) {
+      return { ok: false, error: 'Registry spreadsheet not found. Check that REGISTRY_SHEET_ID is correct and the sheet is shared with the service account.' }
+    }
+    if (e.code === 403 || e.message?.includes('permission')) {
+      return { ok: false, error: 'Cannot access registry spreadsheet. Make sure it is shared with the service account email.' }
+    }
+    return { ok: false, error: `Failed to access registry spreadsheet: ${e.message}` }
+  }
+}
+
 module.exports = {
   getAuth, sheetsClient, driveClient, getRows, appendRows, updateRow,
-  hashPin, makeProductionCode, CORS, ok, err, REGISTRY_SHEET_ID, SHARED_DRIVE_ID
+  hashPin, makeProductionCode, CORS, ok, err, REGISTRY_SHEET_ID, SHARED_DRIVE_ID,
+  ensureRegistryTab
 }

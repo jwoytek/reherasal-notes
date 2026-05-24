@@ -2,7 +2,7 @@
 
 const {
   sheetsClient, getRows, hashPin,
-  REGISTRY_SHEET_ID, CORS, ok, err
+  REGISTRY_SHEET_ID, CORS, ok, err, ensureRegistryTab
 } = require('./_sheets')
 
 const attempts = new Map()
@@ -36,6 +36,13 @@ exports.handler = async (event) => {
 
   try {
     const sheets = await sheetsClient()
+
+    // Ensure Registry tab exists
+    const registryCheck = await ensureRegistryTab(sheets)
+    if (!registryCheck.ok) {
+      return err(registryCheck.error, 500)
+    }
+
     const rows = await getRows(sheets, REGISTRY_SHEET_ID, 'Registry!A:F')
     if (rows.length < 2) return err('Production not found', 404)
 
