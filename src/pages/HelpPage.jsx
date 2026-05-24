@@ -26,17 +26,32 @@ function TypingIndicator() {
 }
 
 export default function HelpPage() {
-  const [messages, setMessages] = useState([
-    {
-      role: 'assistant',
-      content: "Hi! I'm Ova, your Ovature assistant 🎭 I can help you get started, walk you through any feature, or answer questions about running your production. What can I help you with?"
-    }
-  ])
+  const [configured, setConfigured] = useState(null) // null = checking, true/false = result
+  const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const bottomRef = useRef(null)
   const inputRef = useRef(null)
+
+  // Check if Ova is configured on mount
+  useEffect(() => {
+    fetch('/.netlify/functions/chatProxy', { method: 'GET' })
+      .then(res => res.json())
+      .then(data => {
+        setConfigured(data.configured)
+        setMessages([{
+          role: 'assistant',
+          content: data.configured
+            ? "Hi! I'm Ova, your Ovature assistant 🎭 I can help you get started, walk you through any feature, or answer questions about running your production. What can I help you with?"
+            : "I'm currently offline. The AI assistant hasn't been configured for this deployment. Please check the documentation for setup instructions."
+        }])
+      })
+      .catch(() => {
+        setConfigured(false)
+        setMessages([{ role: 'assistant', content: "I'm currently unavailable. Please try again later." }])
+      })
+  }, [])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -127,8 +142,14 @@ export default function HelpPage() {
           </div>
         </a>
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 6 }}>
-          <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#34d399', boxShadow: '0 0 6px #34d399' }} />
-          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>Ova is online</span>
+          <div style={{
+            width: 7, height: 7, borderRadius: '50%',
+            background: configured === null ? 'rgba(255,255,255,0.4)' : configured ? '#34d399' : '#fbbf24',
+            boxShadow: configured ? '0 0 6px #34d399' : 'none'
+          }} />
+          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>
+            {configured === null ? 'Connecting…' : configured ? 'Ova is online' : 'Ova is offline'}
+          </span>
         </div>
       </div>
 
@@ -193,7 +214,7 @@ export default function HelpPage() {
         )}
 
         {/* Suggested questions */}
-        {showSuggestions && !loading && (
+        {showSuggestions && !loading && configured && (
           <div className="msg" style={{ display: 'flex', flexWrap: 'wrap', gap: 8, paddingLeft: 42 }}>
             {SUGGESTED_QUESTIONS.map(q => (
               <button key={q} className="suggestion-btn" onClick={() => send(q)}
@@ -225,9 +246,9 @@ export default function HelpPage() {
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={handleKey}
-            placeholder="Ask me anything about Ovature…"
+            placeholder={configured ? "Ask me anything about Ovature…" : "Ova is offline"}
             rows={1}
-            disabled={loading}
+            disabled={loading || !configured}
             style={{
               flex: 1, padding: '12px 16px', borderRadius: 14, fontSize: 14,
               background: 'rgba(255,255,255,0.06)',
@@ -235,17 +256,18 @@ export default function HelpPage() {
               color: '#fff', resize: 'none', lineHeight: 1.5,
               fontFamily: 'inherit', transition: 'border-color 0.15s',
               maxHeight: 120, overflowY: 'auto',
+              opacity: configured ? 1 : 0.5,
             }}
             onInput={e => {
               e.target.style.height = 'auto'
               e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px'
             }}
           />
-          <button className="send-btn" onClick={() => send()} disabled={!input.trim() || loading}
+          <button className="send-btn" onClick={() => send()} disabled={!input.trim() || loading || !configured}
             style={{
               width: 44, height: 44, borderRadius: 12, border: 'none', cursor: 'pointer',
-              background: input.trim() && !loading ? '#5b21b6' : 'rgba(255,255,255,0.08)',
-              color: input.trim() && !loading ? '#fff' : 'rgba(255,255,255,0.3)',
+              background: input.trim() && !loading && configured ? '#5b21b6' : 'rgba(255,255,255,0.08)',
+              color: input.trim() && !loading && configured ? '#fff' : 'rgba(255,255,255,0.3)',
               fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center',
               transition: 'all 0.15s', flexShrink: 0,
             }}>
