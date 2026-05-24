@@ -18,21 +18,39 @@ function TypingIndicator() {
 
 export default function OvaWidget({ hidden }) {
   const [open, setOpen] = useState(false)
-  const [messages, setMessages] = useState([
-    { role: 'assistant', content: "Hi! I'm Ova 🎭 How can I help you with Ovature?" }
-  ])
+  const [configured, setConfigured] = useState(null) // null = checking, true/false = result
+  const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const bottomRef = useRef(null)
   const inputRef = useRef(null)
+
+  // Check if Ova is configured on mount
+  useEffect(() => {
+    fetch('/.netlify/functions/chatProxy', { method: 'GET' })
+      .then(res => res.json())
+      .then(data => {
+        setConfigured(data.configured)
+        setMessages([{
+          role: 'assistant',
+          content: data.configured
+            ? "Hi! I'm Ova 🎭 How can I help you with Ovature?"
+            : "I'm currently offline. The AI assistant hasn't been configured for this deployment."
+        }])
+      })
+      .catch(() => {
+        setConfigured(false)
+        setMessages([{ role: 'assistant', content: "I'm currently unavailable. Please try again later." }])
+      })
+  }, [])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, loading, open])
 
   useEffect(() => {
-    if (open) setTimeout(() => inputRef.current?.focus(), 150)
-  }, [open])
+    if (open && configured) setTimeout(() => inputRef.current?.focus(), 150)
+  }, [open, configured])
 
   async function send(text) {
     const userText = text || input.trim()
@@ -119,9 +137,16 @@ export default function OvaWidget({ hidden }) {
             }}>🎭</div>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>Ova</div>
-              <div style={{ fontSize: 10, color: 'var(--green-text)', display: 'flex', alignItems: 'center', gap: 4 }}>
-                <div style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--green-text)' }} />
-                Online
+              <div style={{
+                fontSize: 10,
+                color: configured ? 'var(--green-text)' : 'var(--text3)',
+                display: 'flex', alignItems: 'center', gap: 4
+              }}>
+                <div style={{
+                  width: 5, height: 5, borderRadius: '50%',
+                  background: configured === null ? 'var(--text3)' : configured ? 'var(--green-text)' : 'var(--amber-text)'
+                }} />
+                {configured === null ? 'Connecting…' : configured ? 'Online' : 'Offline'}
               </div>
             </div>
             <div style={{ display: 'flex', gap: 6 }}>
@@ -188,25 +213,26 @@ export default function OvaWidget({ hidden }) {
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={handleKey}
-              placeholder="Ask Ova anything…"
+              placeholder={configured ? "Ask Ova anything…" : "Ova is offline"}
               rows={1}
-              disabled={loading}
+              disabled={loading || !configured}
               style={{
                 flex: 1, padding: '8px 12px', borderRadius: 10, fontSize: 13,
                 background: 'var(--bg2)', border: '0.5px solid var(--border)',
                 color: 'var(--text)', resize: 'none', lineHeight: 1.5,
                 fontFamily: 'inherit', maxHeight: 80, overflowY: 'auto',
+                opacity: configured ? 1 : 0.5,
               }}
               onInput={e => {
                 e.target.style.height = 'auto'
                 e.target.style.height = Math.min(e.target.scrollHeight, 80) + 'px'
               }}
             />
-            <button className="ova-send" onClick={() => send()} disabled={!input.trim() || loading}
+            <button className="ova-send" onClick={() => send()} disabled={!input.trim() || loading || !configured}
               style={{
                 width: 34, height: 34, borderRadius: 9, border: 'none', cursor: 'pointer',
-                background: input.trim() && !loading ? 'var(--accent)' : 'var(--bg3)',
-                color: input.trim() && !loading ? 'var(--accent-text)' : 'var(--text3)',
+                background: input.trim() && !loading && configured ? 'var(--accent)' : 'var(--bg3)',
+                color: input.trim() && !loading && configured ? 'var(--accent-text)' : 'var(--text3)',
                 fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center',
                 transition: 'all 0.15s', flexShrink: 0,
               }}>

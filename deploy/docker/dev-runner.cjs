@@ -6,7 +6,15 @@
  */
 
 const { spawn } = require('child_process')
+const fs = require('fs')
 const path = require('path')
+
+// Clear Vite cache to ensure fresh content
+const viteCache = '/app/node_modules/.vite'
+if (fs.existsSync(viteCache)) {
+  console.log('Clearing Vite cache...')
+  fs.rmSync(viteCache, { recursive: true, force: true })
+}
 
 console.log('Starting development servers...')
 

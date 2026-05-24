@@ -5,7 +5,27 @@ const { CORS } = require('./_sheets')
 
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers: CORS, body: '' }
+
+  // Status check - returns whether Ova is configured
+  if (event.httpMethod === 'GET') {
+    const configured = !!process.env.ANTHROPIC_API_KEY
+    return {
+      statusCode: 200,
+      headers: { ...CORS, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ configured })
+    }
+  }
+
   if (event.httpMethod !== 'POST') return { statusCode: 405, headers: CORS, body: 'Method not allowed' }
+
+  // Check if API key is configured
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return {
+      statusCode: 503,
+      headers: { ...CORS, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: 'AI assistant not configured', unconfigured: true })
+    }
+  }
 
   let body
   try { body = JSON.parse(event.body) } catch {

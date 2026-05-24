@@ -146,11 +146,6 @@ export default function ReportTab({ notes, production, sheetId, session }) {
           </button>
         </div>
 
-        {!process.env.MANDRILL_API_KEY && (
-          <p style={{ fontSize: 12, color: 'var(--text3)', marginTop: '0.75rem' }}>
-            Add MANDRILL_API_KEY to Netlify env vars to enable email sending.
-          </p>
-        )}
       </div>
 
       {/* Preview */}

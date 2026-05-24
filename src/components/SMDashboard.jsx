@@ -75,6 +75,7 @@ export default function SMDashboard({ sheetId, productionCode, production, sessi
   const [reportCountdown, setReportCountdown] = useState(null)
   const [reportFired, setReportFired] = useState(false)
   const [reportSending, setReportSending] = useState(false)
+  const [reportResult, setReportResult] = useState(null) // { sent, message, reportPreview }
   const [closingNote, setClosingNote] = useState('')
   const reportTimerRef = useRef(null)
   const countdownRef = useRef(null)
@@ -101,15 +102,25 @@ export default function SMDashboard({ sheetId, productionCode, production, sessi
   })()
 
   // Poll timeline
+  const PHASE_ORDER = { preshow: 0, act1: 1, intermission: 2, act2: 3, done: 4 }
   useEffect(() => {
     async function poll() {
       if (savingTimelineRef.current) return
       const { timeline: remote, lockedBy: lb } = await getTimelineRemote(sheetId, showDate)
       if (remote) {
-        setTimeline(remote)
+        // Don't regress to an earlier phase (stale data from race condition)
+        setTimeline(prev => {
+          const prevPhase = PHASE_ORDER[prev.phase] ?? 0
+          const remotePhase = PHASE_ORDER[remote.phase] ?? 0
+          // Only apply remote if it's at least as advanced, or if it has a higher perfNum (reset)
+          if (remotePhase >= prevPhase || (remote.perfNum || 0) > (prev.perfNum || 0)) {
+            saveTimeline(sheetId, showDate, remote)
+            if (remote.reportFired) setReportFired(true)
+            return remote
+          }
+          return prev
+        })
         setLockedBy(lb || null)
-        saveTimeline(sheetId, showDate, remote)
-        if (remote.reportFired) setReportFired(true)
       }
     }
     poll()
@@ -212,6 +223,21 @@ export default function SMDashboard({ sheetId, productionCode, production, sessi
     finally { setSavingNote(false) }
   }
 
+  async function resetTimeline() {
+    if (!confirm('Reset the show timeline for another performance? This clears all act timers.')) return
+    const fresh = defaultTimeline()
+    fresh.perfNum = (timeline.perfNum || 1) + 1
+    setTimeline(fresh)
+    setLockedBy(null)
+    setReportFired(false)
+    setReportResult(null)
+    setReportCountdown(null)
+    setClosingNote('')
+    clearTimeout(reportTimerRef.current)
+    clearInterval(countdownRef.current)
+    await saveTimelineRemote(sheetId, showDate, fresh)
+  }
+
   async function fireReport(extraNote = closingNote) {
     if (reportFired) return
     setReportFired(true)
@@ -219,8 +245,12 @@ export default function SMDashboard({ sheetId, productionCode, production, sessi
     // Save to sheet so all devices know report was sent
     await saveTimelineRemote(sheetId, showDate, { ...timeline, reportFired: true })
     try {
-      await api.sendShowReport({ sheetId, showDate, timeline, closingNote: extraNote, productionCode })
-    } catch (e) { console.warn('Report send failed:', e.message) }
+      const result = await api.sendShowReport({ sheetId, showDate, timeline, closingNote: extraNote, productionCode })
+      setReportResult(result)
+    } catch (e) {
+      console.warn('Report send failed:', e.message)
+      setReportResult({ sent: false, message: 'Failed to send report: ' + e.message })
+    }
     finally { setReportSending(false) }
   }
 
@@ -433,6 +463,7 @@ export default function SMDashboard({ sheetId, productionCode, production, sessi
               <div style={{ textAlign: 'center', flex: 1 }}>
                 <p style={{ fontSize: 22, margin: 0 }}>🎉</p>
                 <p style={{ fontSize: 18, fontWeight: 800, color: '#fff', margin: '4px 0 2px' }}>Show complete!</p>
+                {timeline.perfNum && <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', margin: 0 }}>Performance {timeline.perfNum}</p>}
               </div>
               {canEdit && <button className="btn btn-sm" onClick={() => setManualEntry(true)} style={{ fontSize: 10, background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)', borderColor: 'transparent' }}>✏ Edit times</button>}
             </div>
@@ -471,10 +502,54 @@ export default function SMDashboard({ sheetId, productionCode, production, sessi
                   {reportSending ? 'Sending…' : '📧 Send report now'}
                 </button>
               </>
+            ) : reportSending || !reportResult ? (
+              <p style={{ fontSize: 13, color: 'var(--text2)', fontWeight: 500 }}>📧 Sending report...</p>
+            ) : reportResult.sent === false ? (
+              <>
+                <p style={{ fontSize: 13, color: 'var(--yellow-text)', fontWeight: 500, marginBottom: 8 }}>
+                  ⚠️ {reportResult.message || 'Report not sent'}
+                </p>
+                {reportResult.reportPreview && (
+                  <details style={{ fontSize: 12, color: 'var(--text2)' }}>
+                    <summary style={{ cursor: 'pointer', marginBottom: 8, color: 'var(--text3)' }}>View report content</summary>
+                    <pre style={{
+                      background: 'var(--bg2)',
+                      padding: '12px',
+                      borderRadius: 'var(--radius)',
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'break-word',
+                      fontSize: 11,
+                      lineHeight: 1.5,
+                      maxHeight: 300,
+                      overflowY: 'auto',
+                      margin: 0
+                    }}>{reportResult.reportPreview}</pre>
+                  </details>
+                )}
+              </>
             ) : (
               <p style={{ fontSize: 13, color: 'var(--green-text)', fontWeight: 500 }}>✅ Show report sent to SM and Director!</p>
             )}
           </div>
+
+          {/* Reset for next performance */}
+          {isController && (
+            <div className="card" style={{ marginBottom: 12 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div>
+                  <p style={{ fontSize: 13, fontWeight: 500, margin: 0 }}>
+                    {timeline.perfNum ? `Performance ${timeline.perfNum} complete` : 'Performance complete'}
+                  </p>
+                  <p style={{ fontSize: 12, color: 'var(--text3)', margin: '2px 0 0' }}>
+                    Reset to start another show today
+                  </p>
+                </div>
+                <button className="btn" onClick={resetTimeline} style={{ whiteSpace: 'nowrap' }}>
+                  Reset for next show
+                </button>
+              </div>
+            </div>
+          )}
 
           {tonightNotes.length > 0 && (
             <div className="card">

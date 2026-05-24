@@ -235,7 +235,27 @@ exports.handler = async (event) => {
     const text = `Show Report — ${productionTitle} — ${showDateLabel}\n\nRun Times:\nAct 1: ${fmtMs(act1Ms)}\nIntermission: ${fmtMs(intMs)}\nAct 2: ${fmtMs(act2Ms)}\nTotal: ${fmtMs(act1Ms + intMs + act2Ms)}\n\nAttendance: ${checkedIn.length} in, ${missingCast.length} missing${missingCast.length > 0 ? ': ' + missingCast.join(', ') : ''}\n\nTonight's notes: ${tonightNotes.length}\nOpen notes: ${openNotes.length}${closingNote ? '\n\nSM Notes: ' + closingNote : ''}`
 
     const recipients = [directorEmail, smEmail].filter(Boolean)
-    if (recipients.length === 0) return err('No email addresses configured for director or SM')
+
+    // Check if email is configured
+    if (!process.env.RESEND_API_KEY) {
+      return ok({
+        sent: false,
+        reason: 'email_not_configured',
+        message: 'Email not configured — report not sent',
+        reportPreview: text,
+        reportHtml: html
+      })
+    }
+
+    if (recipients.length === 0) {
+      return ok({
+        sent: false,
+        reason: 'no_recipients',
+        message: 'No email addresses configured for director or SM',
+        reportPreview: text,
+        reportHtml: html
+      })
+    }
 
     await resendEmail({
       to: recipients,
