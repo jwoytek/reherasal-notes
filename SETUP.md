@@ -32,14 +32,15 @@ This is a single Google Sheet YOU own that acts as the index of all productions.
 
 1. Go to [sheets.google.com](https://sheets.google.com) and create a new sheet
 2. Name it: `Rehearsal Notes Registry`
-3. On the first tab, rename it to `Registry`
-4. **Share it** with your service account email (Editor access):
+3. **Share it** with your service account email (Editor access):
    - `altius-qc-functions@altius-project-hub.iam.gserviceaccount.com`
-5. Copy the Sheet ID from the URL:
+4. Copy the Sheet ID from the URL:
    - URL looks like: `https://docs.google.com/spreadsheets/d/SHEET_ID_HERE/edit`
    - Copy the `SHEET_ID_HERE` part — you'll need it below
 
-The app will automatically create the header row on first use.
+The app will automatically configure the spreadsheet on first use:
+- If the spreadsheet is empty, the default tab will be renamed to `Registry`
+- The header row will be created automatically
 
 ---
 
@@ -172,6 +173,14 @@ Each production gets its own Google Sheet with 3 tabs:
 ---
 
 ## Troubleshooting
+
+**"Registry sheet is not configured correctly"** — The registry spreadsheet needs a tab named exactly `Registry`. This happens when:
+- You're using an existing spreadsheet that already has data
+- The tab was renamed or deleted
+
+**To fix:** Either:
+1. Use a brand new, empty spreadsheet (the app will auto-configure it), or
+2. Manually rename an existing tab to `Registry` (right-click the tab → Rename)
 
 **"Production not found"** — Check that `REGISTRY_SHEET_ID` is correct and the sheet is shared with the service account.
 

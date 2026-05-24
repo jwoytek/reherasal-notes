@@ -2,7 +2,8 @@
 
 const {
   sheetsClient, driveClient, getRows, appendRows,
-  hashPin, makeProductionCode, REGISTRY_SHEET_ID, SHARED_DRIVE_ID, CORS, ok, err
+  hashPin, makeProductionCode, REGISTRY_SHEET_ID, SHARED_DRIVE_ID, CORS, ok, err,
+  ensureRegistryTab
 } = require('./_sheets')
 const { defaultActs, migrateConfig } = require('./_actsScenes')
 
@@ -24,7 +25,14 @@ exports.handler = async (event) => {
     const sheets = await sheetsClient()
     const drive = await driveClient()
 
+    // 0. Ensure Registry tab exists (auto-configures empty spreadsheets)
+    const registryCheck = await ensureRegistryTab(sheets)
+    if (!registryCheck.ok) {
+      return err(registryCheck.error, 500)
+    }
+
     // 1. Create production root folder
+    console.log(`drive id: ${SHARED_DRIVE_ID}`);
     const rootFolder = await drive.files.create({
       supportsAllDrives: true,
       requestBody: { name: title, mimeType: 'application/vnd.google-apps.folder', parents: [SHARED_DRIVE_ID] },
