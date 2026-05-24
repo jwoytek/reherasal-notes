@@ -12,7 +12,8 @@ updates:
       time: "09:00"
       timezone: "America/New_York"
     # Limit number of open PRs
-    open-pull-requests-limit: 10
+    # only take security updates for now
+    open-pull-requests-limit: 0
     # Group minor and patch updates together
     groups:
       # Production dependencies
