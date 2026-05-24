@@ -65,6 +65,10 @@ export async function getTimelineRemote(sheetId, showDate) {
       `/.netlify/functions/getTimeline?sheetId=${sheetId}&showDate=${showDate}`,
       { cache: 'no-store' }
     )
+    if (!res.ok) {
+      // Don't try to parse non-OK responses (may be HTML error pages)
+      return { timeline: getTimeline(sheetId, showDate), lockedBy: '' }
+    }
     const data = await res.json()
     if (data.timeline) {
       const migrated = migrateTimeline(data.timeline)
