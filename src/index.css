@@ -120,9 +120,10 @@ input[type=password]:hover, select:hover, textarea:hover { border-color: rgba(25
 /* Cards */
 .card {
   background: var(--bg);
-  border: 0.5px solid var(--border);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 1.25rem;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
 }
 
 /* Tabs */
@@ -174,10 +175,20 @@ input[type=password]:hover, select:hover, textarea:hover { border-color: rgba(25
 .pdot-low  { background: #97c459; }
 
 /* Stats bar */
-.stats-bar { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 1.25rem; }
-.stat { background: var(--bg2); border-radius: var(--radius); padding: 10px 12px; }
-.stat-n { font-size: 22px; font-weight: 600; }
-.stat-l { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.stats-bar { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 1.25rem; }
+.stat {
+  background: rgba(255,255,255,0.045);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 18px 16px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+  transition: transform 0.18s ease, border-color 0.18s ease;
+}
+.stat:hover { transform: translateY(-2px); border-color: var(--border2); }
+.stat-n { font-family: var(--font-display); font-size: clamp(26px, 5vw, 36px); font-weight: 600; letter-spacing: -0.5px; line-height: 1; }
+.stat-l { font-size: 12px; color: var(--text2); margin-top: 8px; }
 
 /* Filter pills */
 .filter-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1rem; align-items: center; }
@@ -189,7 +200,13 @@ input[type=password]:hover, select:hover, textarea:hover { border-color: rgba(25
   color: var(--text2);
   cursor: pointer; transition: all 0.15s;
 }
-.filter-pill.active { background: var(--text); color: var(--bg); border-color: transparent; }
+.filter-pill:hover { border-color: var(--border2); color: var(--text); }
+.filter-pill.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 0 16px rgba(139,92,246,0.28);
+}
 .filter-label { font-size: 12px; color: var(--text3); }
 
 /* Section divider */
@@ -209,6 +226,22 @@ input[type=password]:hover, select:hover, textarea:hover { border-color: rgba(25
 .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
 .muted { color: var(--text2); font-size: 13px; }
 .empty { padding: 2.5rem; text-align: center; color: var(--text3); font-size: 14px; }
+
+/* Quick-action tiles (Home) */
+.quicknav-grid .btn {
+  background: rgba(255,255,255,0.045);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+.quicknav-grid .btn:hover {
+  transform: translateY(-3px);
+  border-color: var(--border2);
+  background: rgba(139,92,246,0.08);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 0 28px rgba(139,92,246,0.16);
+}
 
 /* ── Mobile ─────────────────────────────────────────── */
 @media (max-width: 640px) {
