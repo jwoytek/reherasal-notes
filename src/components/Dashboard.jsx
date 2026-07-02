@@ -84,7 +84,7 @@ export default function Dashboard({
       {/* Next rehearsal */}
       {nextEvent && (
         <div className="card" style={{ marginBottom: '1rem', cursor: 'pointer' }}
-          onClick={() => onNavigate(3)}>
+          onClick={() => onNavigate(4)}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
             <div>
               <p style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 2 }}>Next rehearsal</p>
@@ -137,7 +137,7 @@ export default function Dashboard({
             <p style={{ fontSize: 13, fontWeight: 500 }}>
               Last rehearsal — {new Date(lastDate + 'T00:00:00').toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })}
             </p>
-            <button className="btn btn-sm" onClick={() => onNavigate(1)}>View all →</button>
+            <button className="btn btn-sm" onClick={() => onNavigate(2)}>View all →</button>
           </div>
           <div style={{ display: 'flex', gap: 12, fontSize: 13, color: 'var(--text2)' }}>
             <span>{lastRehearsalNotes.length} notes logged</span>
@@ -151,28 +151,28 @@ export default function Dashboard({
 
       {/* Quick actions */}
       <div className="quicknav-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-        <button className="btn" onClick={() => onNavigate(1)}
+        <button className="btn" onClick={() => onNavigate(2)}
           style={{ height: 88, flexDirection: 'column', gap: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <span className="qn-ring">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16v12H5.2L4 17.2z"/><path d="M8 9h8M8 12h5"/></svg>
           </span>
           <span style={{ fontSize: 13 }}>Review notes</span>
         </button>
-        <button className="btn" onClick={() => onNavigate(2)}
+        <button className="btn" onClick={() => onNavigate(3)}
           style={{ height: 88, flexDirection: 'column', gap: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <span className="qn-ring">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0114 0"/></svg>
           </span>
           <span style={{ fontSize: 13 }}>By cast member</span>
         </button>
-        <button className="btn" onClick={() => onNavigate(5)}
+        <button className="btn" onClick={() => onNavigate(6)}
           style={{ height: 88, flexDirection: 'column', gap: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <span className="qn-ring">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19V5M4 19h16M8 15l3-4 3 2 4-6"/></svg>
           </span>
           <span style={{ fontSize: 13 }}>Trends</span>
         </button>
-        <button className="btn" onClick={() => onNavigate(3)}
+        <button className="btn" onClick={() => onNavigate(4)}
           style={{ height: 88, flexDirection: 'column', gap: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <span className="qn-ring">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>

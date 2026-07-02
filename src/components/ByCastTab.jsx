@@ -116,9 +116,9 @@ export default function ByCastTab({ notes, sheetId, scenes, scenesStruct = [], a
           {allCastInNotes.map(name => (
             <button key={name} onClick={() => toggleCast(name)}
               style={{ fontSize: 11, padding: '3px 10px', borderRadius: 20, cursor: 'pointer', fontWeight: selectedCast.includes(name) ? 700 : 400,
-                background: selectedCast.includes(name) ? 'var(--blue-bg)' : 'var(--bg2)',
-                color: selectedCast.includes(name) ? 'var(--blue-text)' : 'var(--text2)',
-                border: `0.5px solid ${selectedCast.includes(name) ? 'var(--blue-text)' : 'var(--border)'}` }}>
+                background: selectedCast.includes(name) ? 'var(--purple-bg)' : 'var(--bg2)',
+                color: selectedCast.includes(name) ? 'var(--purple-text)' : 'var(--text2)',
+                border: `0.5px solid ${selectedCast.includes(name) ? 'var(--purple-text)' : 'var(--border)'}` }}>
               {name}
             </button>
           ))}
@@ -138,9 +138,9 @@ export default function ByCastTab({ notes, sheetId, scenes, scenesStruct = [], a
           {CATEGORIES.filter(c => allDeptsInNotes.includes(c.value)).map(({ value, label }) => (
             <button key={value} onClick={() => toggleDept(value)}
               style={{ fontSize: 11, padding: '3px 10px', borderRadius: 20, cursor: 'pointer', fontWeight: selectedDepts.includes(value) ? 700 : 400,
-                background: selectedDepts.includes(value) ? 'var(--blue-bg)' : 'var(--bg2)',
-                color: selectedDepts.includes(value) ? 'var(--blue-text)' : 'var(--text2)',
-                border: `0.5px solid ${selectedDepts.includes(value) ? 'var(--blue-text)' : 'var(--border)'}` }}>
+                background: selectedDepts.includes(value) ? 'var(--purple-bg)' : 'var(--bg2)',
+                color: selectedDepts.includes(value) ? 'var(--purple-text)' : 'var(--text2)',
+                border: `0.5px solid ${selectedDepts.includes(value) ? 'var(--purple-text)' : 'var(--border)'}` }}>
               {label}
             </button>
           ))}
