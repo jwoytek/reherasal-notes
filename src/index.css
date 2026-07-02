@@ -546,8 +546,10 @@ input[type=password]:hover, select:hover, textarea:hover { border-color: rgba(25
 }
 
 .sidebar-header {
+  height: 56px;
+  box-sizing: border-box;
   padding: 14px 12px 12px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid var(--border);
   flex-shrink: 0;
   overflow: hidden;
 }
@@ -692,11 +694,10 @@ input[type=password]:hover, select:hover, textarea:hover { border-color: rgba(25
 }
 
 .app-main-topbar {
-  background: var(--bg);
-  border-bottom: 0.5px solid var(--border);
-  border-left: 3px solid var(--accent, #0f2340);
+  background: var(--chrome-bg);
+  border-bottom: 1px solid var(--border);
   padding: 0 1.5rem;
-  height: 52px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: space-between;
