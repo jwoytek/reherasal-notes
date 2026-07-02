@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import { detectScenesFromEvent, eventToDate } from '../lib/sceneDetect'
 
-function StatCard({ n, label, color }) {
+function StatCard({ n, label, color, attention }) {
   return (
-    <div className="stat" style={color ? { borderLeft: `3px solid ${color}` } : {}}>
+    <div className={`stat${attention ? ' stat--attention' : ''}`} style={color ? { borderLeft: `3px solid ${color}` } : {}}>
       <div className="stat-n" style={color ? { color } : {}}>{n}</div>
       <div className="stat-l">{label}</div>
     </div>
@@ -105,9 +105,9 @@ export default function Dashboard({
 
       {/* Stats */}
       <div className="stats-bar" style={{ marginBottom: '1rem' }}>
-        <StatCard n={openCount} label="open notes" color={openCount > 0 ? undefined : undefined} />
+        <StatCard n={openCount} label="open notes" attention={openCount > 0} />
         <StatCard n={highCount} label="high priority" color={highCount > 0 ? '#e24b4a' : undefined} />
-        <StatCard n={pinnedCount} label="pinned" color={pinnedCount > 0 ? '#ef9f27' : undefined} />
+        <StatCard n={pinnedCount} label="pinned" color={pinnedCount > 0 ? '#a78bfa' : undefined} />
         <StatCard n={totalNotes} label="total notes" />
       </div>
 
@@ -150,26 +150,34 @@ export default function Dashboard({
       )}
 
       {/* Quick actions */}
-      <div className="quicknav-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+      <div className="quicknav-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
         <button className="btn" onClick={() => onNavigate(1)}
-          style={{ height: 64, flexDirection: 'column', gap: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ fontSize: 20 }}>📋</span>
-          <span style={{ fontSize: 12 }}>Review notes</span>
+          style={{ height: 88, flexDirection: 'column', gap: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <span className="qn-ring">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16v12H5.2L4 17.2z"/><path d="M8 9h8M8 12h5"/></svg>
+          </span>
+          <span style={{ fontSize: 13 }}>Review notes</span>
         </button>
         <button className="btn" onClick={() => onNavigate(2)}
-          style={{ height: 64, flexDirection: 'column', gap: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ fontSize: 20 }}>👤</span>
-          <span style={{ fontSize: 12 }}>By cast member</span>
+          style={{ height: 88, flexDirection: 'column', gap: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <span className="qn-ring">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0114 0"/></svg>
+          </span>
+          <span style={{ fontSize: 13 }}>By cast member</span>
         </button>
         <button className="btn" onClick={() => onNavigate(5)}
-          style={{ height: 64, flexDirection: 'column', gap: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ fontSize: 20 }}>📊</span>
-          <span style={{ fontSize: 12 }}>Trends</span>
+          style={{ height: 88, flexDirection: 'column', gap: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <span className="qn-ring">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19V5M4 19h16M8 15l3-4 3 2 4-6"/></svg>
+          </span>
+          <span style={{ fontSize: 13 }}>Trends</span>
         </button>
         <button className="btn" onClick={() => onNavigate(3)}
-          style={{ height: 64, flexDirection: 'column', gap: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ fontSize: 20 }}>📅</span>
-          <span style={{ fontSize: 12 }}>Calendar</span>
+          style={{ height: 88, flexDirection: 'column', gap: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <span className="qn-ring">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
+          </span>
+          <span style={{ fontSize: 13 }}>Calendar</span>
         </button>
       </div>
     </div>

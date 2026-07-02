@@ -189,6 +189,23 @@ input[type=password]:hover, select:hover, textarea:hover { border-color: rgba(25
 .stat:hover { transform: translateY(-2px); border-color: var(--border2); }
 .stat-n { font-family: var(--font-display); font-size: clamp(26px, 5vw, 36px); font-weight: 600; letter-spacing: -0.5px; line-height: 1; }
 .stat-l { font-size: 12px; color: var(--text2); margin-top: 8px; }
+.stat--attention {
+  border-color: rgba(246,214,126,0.30);
+  background: linear-gradient(180deg, rgba(246,214,126,0.08), rgba(255,255,255,0.045));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 0 30px rgba(246,214,126,0.12);
+}
+.stat--attention .stat-n { color: var(--amber-text); }
+
+/* Quick-action icon rings (Home) */
+.qn-ring {
+  width: 46px; height: 46px; border-radius: 13px;
+  display: grid; place-items: center;
+  background: radial-gradient(circle at 50% 35%, rgba(139,92,246,0.28), rgba(139,92,246,0.06));
+  border: 1px solid var(--border2);
+  box-shadow: 0 0 18px rgba(139,92,246,0.18);
+  color: var(--purple-text);
+}
+.qn-ring svg { width: 22px; height: 22px; }
 
 /* Filter pills */
 .filter-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1rem; align-items: center; }
