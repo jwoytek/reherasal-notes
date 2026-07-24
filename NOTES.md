@@ -1,10 +1,8 @@
 # NOTES
 ## TO DO STUFF
 - Hosting ?
-    - Stick with Netlify?
-        - Stick with netlify for now
-    - Move to AWS?
-    - Other???
+    - Stick with Netlify for now
+    - Consider AWS for future expansion
 - Authentication updates
 
 - Timer improvements
