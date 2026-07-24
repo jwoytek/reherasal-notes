@@ -79,20 +79,21 @@ export default function IntermissionDashboard({ sheetId, productionCode, product
     <div>
       {/* Header */}
       <div style={{
-        background: timeline.phase === 'act2' ? '#14532d' : intermissionOver ? 'var(--red-text)' : '#1e1b4b',
+        background: intermissionOver ? 'var(--red-bg)' : 'var(--purple-bg)',
+        border: intermissionOver ? '1.5px solid var(--red-text)' : 'none',
         borderRadius: 'var(--radius-lg)', padding: '16px 20px', marginBottom: '1rem',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         transition: 'background 0.5s',
       }}>
         <div>
-          <p style={{ fontSize: 14, fontWeight: 700, color: '#fff', margin: 0 }}>
+          <p style={{ fontSize: 14, fontWeight: 700, color: intermissionOver ? 'var(--red-text)' : 'var(--text)', margin: 0 }}>
             {timeline.phase === 'act2' ? '🎭 Act 2 Running' : intermissionOver ? '⏰ Intermission Over Time' : '⏸ Intermission'}
           </p>
-          <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', margin: 0 }}>
+          <p style={{ fontSize: 11, color: intermissionOver ? 'var(--red-text)' : 'var(--text2)', margin: 0 }}>
             {production?.config?.title} · Performance {timeline.perfNum}
           </p>
         </div>
-        <div style={{ fontSize: 22, fontWeight: 700, color: '#fff', fontVariantNumeric: 'tabular-nums' }}>
+        <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)', fontVariantNumeric: 'tabular-nums' }}>
           {now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
         </div>
       </div>

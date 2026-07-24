@@ -344,7 +344,8 @@ export default function SMDashboard({ sheetId, productionCode, production, sessi
 
           {isController ? (
             <button onClick={() => updateTimeline({ phase: 'act1', act1Start: new Date().toISOString() })} disabled={savingTimeline}
-              style={{ width: '100%', background: '#0f2340', border: 'none', borderRadius: 'var(--radius)', padding: '16px', fontSize: 16, fontWeight: 700, color: '#fff', cursor: 'pointer', marginBottom: 12 }}>
+              className="btn btn-primary"
+              style={{ width: '100%', padding: '16px', fontSize: 16, fontWeight: 700, marginBottom: 12 }}>
               ▶ Start Act 1
             </button>
           ) : (
@@ -359,23 +360,23 @@ export default function SMDashboard({ sheetId, productionCode, production, sessi
       {(phase === 'act1' || phase === 'intermission' || phase === 'act2') && (
         <>
           <div style={{
-            background: isOnHold ? '#7c2d12' : phase === 'intermission' ? '#1e1b4b' : phase === 'act2' ? '#14532d' : '#0f2340',
+            background: isOnHold ? 'var(--amber-bg)' : 'var(--purple-bg)',
             borderRadius: 'var(--radius-lg)', padding: '16px 20px', marginBottom: 12,
             transition: 'background 0.3s'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-              <p style={{ fontSize: 12, fontWeight: 700, color: isOnHold ? '#fca5a5' : 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: 1, margin: 0 }}>
+              <p style={{ fontSize: 12, fontWeight: 700, color: isOnHold ? 'var(--amber-text)' : 'var(--text3)', textTransform: 'uppercase', letterSpacing: 1, margin: 0 }}>
                 {isOnHold ? '⏸ HOLD' : phase === 'act1' ? 'Now Playing — Act One' : phase === 'intermission' ? 'Intermission' : 'Now Playing — Act Two'}
               </p>
-              {canEdit && <button className="btn btn-sm" onClick={() => setManualEntry(true)} style={{ fontSize: 10, background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)', borderColor: 'transparent' }}>✏ Edit times</button>}
+              {canEdit && <button className="btn btn-sm" onClick={() => setManualEntry(true)} style={{ fontSize: 10, background: 'var(--bg3)', color: 'var(--text2)', borderColor: 'transparent' }}>✏ Edit times</button>}
             </div>
 
-            <div style={{ fontSize: 48, fontWeight: 900, color: isOnHold ? '#fca5a5' : '#fff', fontVariantNumeric: 'tabular-nums', lineHeight: 1, marginBottom: 12 }}>
+            <div style={{ fontSize: 48, fontWeight: 900, color: 'var(--text)', fontVariantNumeric: 'tabular-nums', lineHeight: 1, marginBottom: 12 }}>
               {currentElapsed()}
             </div>
 
             {isOnHold && (
-              <p style={{ fontSize: 12, color: '#fca5a5', marginBottom: 8, textAlign: 'center' }}>
+              <p style={{ fontSize: 12, color: 'var(--amber-text)', marginBottom: 8, textAlign: 'center' }}>
                 Hold started at {fmtTime(timeline.holdStart)} · Resume when ready
               </p>
             )}
@@ -384,7 +385,7 @@ export default function SMDashboard({ sheetId, productionCode, production, sessi
               <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
                 {/* Hold/Resume button */}
                 <button onClick={toggleHold} disabled={savingTimeline}
-                  style={{ flex: 1, background: isOnHold ? '#f97316' : 'rgba(255,255,255,0.15)', border: isOnHold ? 'none' : '1.5px solid rgba(255,255,255,0.3)', borderRadius: 'var(--radius)', padding: '10px', fontSize: 14, fontWeight: 700, color: '#fff', cursor: 'pointer' }}>
+                  style={{ flex: 1, background: isOnHold ? 'var(--green-text)' : 'var(--amber-bg)', border: isOnHold ? 'none' : '1.5px solid var(--amber-text)', borderRadius: 'var(--radius)', padding: '10px', fontSize: 14, fontWeight: 700, color: isOnHold ? 'var(--bg3)' : 'var(--amber-text)', cursor: 'pointer' }}>
                   {isOnHold ? '▶ Resume' : '⏸ Hold'}
                 </button>
                 {/* Next phase button */}
@@ -394,7 +395,7 @@ export default function SMDashboard({ sheetId, productionCode, production, sessi
                     if (phase === 'act1') updateTimeline({ phase: 'intermission', act1End: n, intermissionStart: n, holdStart: null, totalHoldMs: 0 })
                     else if (phase === 'intermission') updateTimeline({ phase: 'act2', intermissionEnd: n, act2Start: n, holdStart: null, totalHoldMs: 0 })
                     else updateTimeline({ phase: 'done', act2End: n, showEnd: n, holdStart: null, totalHoldMs: 0 })
-                  }} disabled={savingTimeline} style={{ flex: 2, background: phase === 'act1' ? '#fbbf24' : phase === 'intermission' ? '#059669' : 'rgba(255,255,255,0.15)', border: phase === 'act2' ? '1.5px solid rgba(255,255,255,0.3)' : 'none', borderRadius: 'var(--radius)', padding: '10px', fontSize: 14, fontWeight: 700, color: phase === 'act1' ? '#0f0f0f' : '#fff', cursor: savingTimeline ? 'not-allowed' : 'pointer', opacity: savingTimeline ? 0.6 : 1 }}>
+                  }} disabled={savingTimeline} style={{ flex: 2, background: phase === 'act1' ? 'var(--amber-text)' : phase === 'intermission' ? 'var(--green-text)' : 'transparent', border: phase === 'act2' ? '1.5px solid var(--text2)' : 'none', borderRadius: 'var(--radius)', padding: '10px', fontSize: 14, fontWeight: 700, color: phase === 'act2' ? 'var(--text)' : 'var(--bg3)', cursor: savingTimeline ? 'not-allowed' : 'pointer', opacity: savingTimeline ? 0.6 : 1 }}>
                     {savingTimeline ? '…' : phase === 'act1' ? '⏸ Start Intermission' : phase === 'intermission' ? '▶ Call Act 2' : '🎉 End Show'}
                   </button>
                 )}
@@ -402,7 +403,7 @@ export default function SMDashboard({ sheetId, productionCode, production, sessi
             )}
 
             {!isController && (
-              <div style={{ padding: '10px', textAlign: 'center', fontSize: 12, color: 'rgba(255,255,255,0.4)', border: '1px dashed rgba(255,255,255,0.2)', borderRadius: 'var(--radius)' }}>
+              <div style={{ padding: '10px', textAlign: 'center', fontSize: 12, color: 'var(--text3)', border: '1px dashed var(--border2)', borderRadius: 'var(--radius)' }}>
                 🔒 Controlled by {lockedBy || 'SM'}
               </div>
             )}
@@ -458,14 +459,14 @@ export default function SMDashboard({ sheetId, productionCode, production, sessi
       {/* ── DONE ── */}
       {phase === 'done' && (
         <>
-          <div style={{ background: '#0f2340', borderRadius: 'var(--radius-lg)', padding: '18px 20px', marginBottom: 12 }}>
+          <div style={{ background: 'var(--purple-bg)', borderRadius: 'var(--radius-lg)', padding: '18px 20px', marginBottom: 12 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
               <div style={{ textAlign: 'center', flex: 1 }}>
                 <p style={{ fontSize: 22, margin: 0 }}>🎉</p>
-                <p style={{ fontSize: 18, fontWeight: 800, color: '#fff', margin: '4px 0 2px' }}>Show complete!</p>
-                {timeline.perfNum && <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', margin: 0 }}>Performance {timeline.perfNum}</p>}
+                <p style={{ fontSize: 18, fontWeight: 800, color: 'var(--text)', margin: '4px 0 2px' }}>Show complete!</p>
+                {timeline.perfNum && <p style={{ fontSize: 11, color: 'var(--text3)', margin: 0 }}>Performance {timeline.perfNum}</p>}
               </div>
-              {canEdit && <button className="btn btn-sm" onClick={() => setManualEntry(true)} style={{ fontSize: 10, background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)', borderColor: 'transparent' }}>✏ Edit times</button>}
+              {canEdit && <button className="btn btn-sm" onClick={() => setManualEntry(true)} style={{ fontSize: 10, background: 'var(--bg3)', color: 'var(--text2)', borderColor: 'transparent' }}>✏ Edit times</button>}
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 12 }}>
               {[
@@ -473,16 +474,16 @@ export default function SMDashboard({ sheetId, productionCode, production, sessi
                 { label: 'Intermission', ms: intermissionMs, start: timeline.intermissionStart, end: timeline.intermissionEnd, warn: intermissionMs > 15*60*1000 },
                 { label: 'Act 2', ms: act2Ms, start: timeline.act2Start, end: timeline.act2End },
               ].map(({ label, ms, start, end, warn }) => (
-                <div key={label} style={{ background: 'rgba(255,255,255,0.08)', borderRadius: 8, padding: '10px 8px', textAlign: 'center' }}>
-                  <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)', margin: '0 0 4px', textTransform: 'uppercase', letterSpacing: 0.5 }}>{label}</p>
-                  <p style={{ fontSize: 20, fontWeight: 800, color: warn ? '#fca5a5' : '#fff', margin: 0, fontVariantNumeric: 'tabular-nums' }}>{fmtMs(ms)}</p>
-                  {start && <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)', margin: '3px 0 0' }}>{fmtTime(start)} → {fmtTime(end)}</p>}
+                <div key={label} style={{ background: 'var(--bg3)', borderRadius: 8, padding: '10px 8px', textAlign: 'center' }}>
+                  <p style={{ fontSize: 10, color: 'var(--text3)', margin: '0 0 4px', textTransform: 'uppercase', letterSpacing: 0.5 }}>{label}</p>
+                  <p style={{ fontSize: 20, fontWeight: 800, color: warn ? 'var(--red-text)' : 'var(--text)', margin: 0, fontVariantNumeric: 'tabular-nums' }}>{fmtMs(ms)}</p>
+                  {start && <p style={{ fontSize: 9, color: 'var(--text3)', margin: '3px 0 0' }}>{fmtTime(start)} → {fmtTime(end)}</p>}
                 </div>
               ))}
             </div>
-            <div style={{ borderTop: '0.5px solid rgba(255,255,255,0.12)', paddingTop: 12, textAlign: 'center' }}>
-              <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)', margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: 0.5 }}>Total running time</p>
-              <p style={{ fontSize: 28, fontWeight: 900, color: '#fff', margin: 0, fontVariantNumeric: 'tabular-nums' }}>{fmtMs(act1Ms + intermissionMs + act2Ms)}</p>
+            <div style={{ borderTop: '0.5px solid var(--border)', paddingTop: 12, textAlign: 'center' }}>
+              <p style={{ fontSize: 10, color: 'var(--text3)', margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: 0.5 }}>Total running time</p>
+              <p style={{ fontSize: 28, fontWeight: 900, color: 'var(--text)', margin: 0, fontVariantNumeric: 'tabular-nums' }}>{fmtMs(act1Ms + intermissionMs + act2Ms)}</p>
             </div>
           </div>
 
@@ -506,7 +507,7 @@ export default function SMDashboard({ sheetId, productionCode, production, sessi
               <p style={{ fontSize: 13, color: 'var(--text2)', fontWeight: 500 }}>📧 Sending report...</p>
             ) : reportResult.sent === false ? (
               <>
-                <p style={{ fontSize: 13, color: 'var(--yellow-text)', fontWeight: 500, marginBottom: 8 }}>
+                <p style={{ fontSize: 13, color: 'var(--amber-text)', fontWeight: 500, marginBottom: 8 }}>
                   ⚠️ {reportResult.message || 'Report not sent'}
                 </p>
                 {reportResult.reportPreview && (

@@ -287,9 +287,9 @@ export default function CheckinTab({ sheetId, productionCode, production, sessio
         </div>
 
         {/* Cast portal link */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, padding: '10px 14px', background: 'var(--blue-bg)', borderRadius: 'var(--radius)', border: '0.5px solid #6d28d9', marginTop: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, padding: '10px 14px', background: 'var(--purple-bg)', borderRadius: 'var(--radius)', border: '0.5px solid var(--border2)', marginTop: 8 }}>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={{ fontSize: 12, fontWeight: 600, marginBottom: 2, color: '#6d28d9' }}>🎭 Cast portal</p>
+            <p style={{ fontSize: 12, fontWeight: 600, marginBottom: 2, color: 'var(--purple-text)' }}>🎭 Cast portal</p>
             <p style={{ fontSize: 11, color: 'var(--text3)', wordBreak: 'break-all' }}>{`${window.location.origin}/portal/${productionCode}`}</p>
           </div>
           <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>

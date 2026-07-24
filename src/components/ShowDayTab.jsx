@@ -426,26 +426,26 @@ export default function ShowDayTab({ sheetId, productionCode, production, sessio
     const gridTemplate = `1fr ${cols.slice(1).map(() => 'auto').join(' ')}`
 
     return (
-      <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: 10, padding: '12px 14px', marginTop: 12 }}>
-        <p style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>Run history</p>
+      <div style={{ background: 'var(--bg3)', borderRadius: 10, padding: '12px 14px', marginTop: 12 }}>
+        <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>Run history</p>
         <div style={{ display: 'grid', gridTemplateColumns: gridTemplate, gap: '4px 10px', alignItems: 'center' }}>
           {cols.map((c, i) => (
-            <div key={i} style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: 0.5, textAlign: i === 0 ? 'left' : 'right' }}>
+            <div key={i} style={{ fontSize: 9, color: 'var(--text3)', textTransform: 'uppercase', letterSpacing: 0.5, textAlign: i === 0 ? 'left' : 'right' }}>
               {c === 'Show' ? c : c.replace('A', 'Act ').replace('I', 'Int.')}
             </div>
           ))}
           {rows.map(row => {
             const cells = []
             cells.push(
-              <div key="label" style={{ fontSize: 11, color: row.isCurrent ? '#a78bfa' : row.stats ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.25)', fontWeight: row.isCurrent ? 700 : 400, display: 'flex', alignItems: 'center', gap: 4 }}>
-                {row.isCurrent && <span style={{ fontSize: 8, background: '#a78bfa', color: '#0f2340', borderRadius: 3, padding: '1px 4px', fontWeight: 800 }}>NOW</span>}
+              <div key="label" style={{ fontSize: 11, color: row.isCurrent ? 'var(--purple-text)' : row.stats ? 'var(--text2)' : 'var(--text3)', fontWeight: row.isCurrent ? 700 : 400, display: 'flex', alignItems: 'center', gap: 4 }}>
+                {row.isCurrent && <span style={{ fontSize: 8, background: 'var(--purple-text)', color: 'var(--bg3)', borderRadius: 3, padding: '1px 4px', fontWeight: 800 }}>NOW</span>}
                 {row.label}
               </div>
             )
             for (let i = 0; i < maxActs; i++) {
               const ms = row.stats?.actMs?.[i] || 0
               cells.push(
-                <div key={`a${i}`} style={{ fontSize: 12, fontWeight: row.isCurrent ? 700 : 400, color: ms ? (row.isCurrent ? '#a78bfa' : 'rgba(255,255,255,0.7)') : 'rgba(255,255,255,0.2)', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
+                <div key={`a${i}`} style={{ fontSize: 12, fontWeight: row.isCurrent ? 700 : 400, color: ms ? (row.isCurrent ? 'var(--purple-text)' : 'var(--text2)') : 'var(--text3)', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
                   {ms ? fmtMsLong(ms) : '—'}
                 </div>
               )
@@ -453,14 +453,14 @@ export default function ShowDayTab({ sheetId, productionCode, production, sessio
                 const intMs = row.stats?.intMs?.[i] || 0
                 const intWarn = intMs > 15 * 60 * 1000
                 cells.push(
-                  <div key={`i${i}`} style={{ fontSize: 12, fontWeight: row.isCurrent ? 700 : 400, color: intMs ? (intWarn ? '#fca5a5' : (row.isCurrent ? '#a78bfa' : 'rgba(255,255,255,0.7)')) : 'rgba(255,255,255,0.2)', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
+                  <div key={`i${i}`} style={{ fontSize: 12, fontWeight: row.isCurrent ? 700 : 400, color: intMs ? (intWarn ? 'var(--red-text)' : (row.isCurrent ? 'var(--purple-text)' : 'var(--text2)')) : 'var(--text3)', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
                     {intMs ? fmtMsLong(intMs) : '—'}
                   </div>
                 )
               }
             }
             cells.push(
-              <div key="total" style={{ fontSize: 12, fontWeight: row.isCurrent ? 800 : 400, color: row.stats ? (row.isCurrent ? '#fff' : 'rgba(255,255,255,0.7)') : 'rgba(255,255,255,0.2)', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
+              <div key="total" style={{ fontSize: 12, fontWeight: row.isCurrent ? 800 : 400, color: row.stats ? (row.isCurrent ? 'var(--text)' : 'var(--text2)') : 'var(--text3)', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
                 {row.stats ? fmtMsLong(row.stats.total) : '—'}
               </div>
             )
@@ -476,14 +476,14 @@ export default function ShowDayTab({ sheetId, productionCode, production, sessio
   function TimelineHeader() {
     const phase = timeline.phase
     const lockBanner = !isController && lockedBy ? (
-      <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', textAlign: 'center', marginTop: 8 }}>🔒 Clock controlled by {lockedBy}</p>
+      <p style={{ fontSize: 11, color: 'var(--text3)', textAlign: 'center', marginTop: 8 }}>🔒 Clock controlled by {lockedBy}</p>
     ) : null
 
     // Reusable controller-or-spectator panel
     function ActionPanel({ children }) {
       if (isController) return children
       return (
-        <div style={{ padding: '10px', textAlign: 'center', fontSize: 12, color: 'rgba(255,255,255,0.4)', border: '1px dashed rgba(255,255,255,0.2)', borderRadius: 'var(--radius)' }}>
+        <div style={{ padding: '10px', textAlign: 'center', fontSize: 12, color: 'var(--text3)', border: '1px dashed var(--border2)', borderRadius: 'var(--radius)' }}>
           {lockedBy ? `🔒 Controlled by ${lockedBy}` : '👁 Stage Manager controls the clock'}
         </div>
       )
@@ -494,29 +494,29 @@ export default function ShowDayTab({ sheetId, productionCode, production, sessio
       // Button label: "Start Show" for 1-act, "Start Act 1" otherwise
       const startLabel = totalActs === 1 ? '▶ Start Show' : `▶ Start ${actShortName(0, productionActs)}`
       return (
-        <div style={{ background: overdue ? 'var(--red-text)' : '#0f2340', borderRadius: 'var(--radius-lg)', padding: '16px 20px', marginBottom: 14 }}>
+        <div style={{ background: overdue ? 'var(--red-bg)' : 'var(--purple-bg)', border: overdue ? '1.5px solid var(--red-text)' : 'none', borderRadius: 'var(--radius-lg)', padding: '16px 20px', marginBottom: 14 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
             <div>
-              <p style={{ fontSize: 13, fontWeight: 700, color: overdue ? '#fff' : 'rgba(255,255,255,0.6)', margin: 0, textTransform: 'uppercase', letterSpacing: 1 }}>{overdue ? '⚠ CURTAIN OVERDUE' : 'Time to Curtain'}</p>
-              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', margin: 0 }}>{production?.config?.title}{curtainTime && ` · Curtain ${new Date(`1970-01-01T${curtainTime}`).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`}</p>
+              <p style={{ fontSize: 13, fontWeight: 700, color: overdue ? 'var(--red-text)' : 'var(--text3)', margin: 0, textTransform: 'uppercase', letterSpacing: 1 }}>{overdue ? '⚠ CURTAIN OVERDUE' : 'Time to Curtain'}</p>
+              <p style={{ fontSize: 11, color: overdue ? 'var(--red-text)' : 'var(--text3)', margin: 0 }}>{production?.config?.title}{curtainTime && ` · Curtain ${new Date(`1970-01-01T${curtainTime}`).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`}</p>
             </div>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)' }}>{now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</div>
+            <div style={{ fontSize: 11, color: overdue ? 'var(--red-text)' : 'var(--text3)' }}>{now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</div>
           </div>
           <div style={{ textAlign: 'center', padding: '8px 0' }}>
             {!curtainTime ? (
-              <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.4)' }}>Set curtain time below</p>
+              <p style={{ fontSize: 16, color: 'var(--text3)' }}>Set curtain time below</p>
             ) : overdue ? (
               <div>
-                <div style={{ fontSize: 56, fontWeight: 900, color: '#fff', fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>+{fmtCountdown(overCurtainSecs)}</div>
-                <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', marginTop: 6 }}>over scheduled curtain — {totalActs === 1 ? 'start show' : 'start Act 1'} when ready</p>
+                <div style={{ fontSize: 56, fontWeight: 900, color: 'var(--text)', fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>+{fmtCountdown(overCurtainSecs)}</div>
+                <p style={{ fontSize: 13, color: 'var(--red-text)', marginTop: 6 }}>over scheduled curtain — {totalActs === 1 ? 'start show' : 'start Act 1'} when ready</p>
               </div>
             ) : (
-              <div style={{ fontSize: 56, fontWeight: 900, color: secsLeft < 600 ? '#fbbf24' : '#fff', fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>{fmtCountdown(secsLeft)}</div>
+              <div style={{ fontSize: 56, fontWeight: 900, color: secsLeft < 600 ? 'var(--amber-text)' : 'var(--text)', fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>{fmtCountdown(secsLeft)}</div>
             )}
           </div>
           <ActionPanel>
-            <button onClick={handleStartNextAct}
-              style={{ width: '100%', marginTop: 12, background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.3)', borderRadius: 'var(--radius)', padding: '12px', fontSize: 15, fontWeight: 700, color: '#fff', cursor: 'pointer' }}>
+            <button onClick={handleStartNextAct} className="btn btn-primary"
+              style={{ width: '100%', marginTop: 12, padding: '12px', fontSize: 15, fontWeight: 700 }}>
               {startLabel}
             </button>
           </ActionPanel>
@@ -536,20 +536,20 @@ export default function ShowDayTab({ sheetId, productionCode, production, sessio
         ? '🎉 End Show'
         : `⏸ Start Intermission${totalActs > 2 ? ` ${actIdx + 1}` : ''}`
       const endColor = last
-        ? 'rgba(255,255,255,0.15)'
-        : '#fbbf24'
-      const endTextColor = last ? '#fff' : '#0f0f0f'
-      const endBorder = last ? '1.5px solid rgba(255,255,255,0.3)' : 'none'
+        ? 'transparent'
+        : 'var(--amber-text)'
+      const endTextColor = last ? 'var(--text)' : 'var(--bg3)'
+      const endBorder = last ? '1.5px solid var(--text2)' : 'none'
 
       return (
-        <div style={{ background: '#0f2340', borderRadius: 'var(--radius-lg)', padding: '16px 20px', marginBottom: 14 }}>
+        <div style={{ background: 'var(--purple-bg)', borderRadius: 'var(--radius-lg)', padding: '16px 20px', marginBottom: 14 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
             <div>
-              <p style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.5)', margin: 0, textTransform: 'uppercase', letterSpacing: 1 }}>Now Playing</p>
-              <p style={{ fontSize: 28, fontWeight: 900, color: '#fff', margin: '2px 0 0', letterSpacing: '-0.5px', lineHeight: 1 }}>{actName}</p>
-              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', margin: 0 }}>Started {new Date(actStart).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</p>
+              <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--text3)', margin: 0, textTransform: 'uppercase', letterSpacing: 1 }}>Now Playing</p>
+              <p style={{ fontSize: 28, fontWeight: 900, color: 'var(--text)', margin: '2px 0 0', letterSpacing: '-0.5px', lineHeight: 1 }}>{actName}</p>
+              <p style={{ fontSize: 11, color: 'var(--text3)', margin: 0 }}>Started {new Date(actStart).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</p>
             </div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: '#fff', fontVariantNumeric: 'tabular-nums' }}>{now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' })}</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--text)', fontVariantNumeric: 'tabular-nums' }}>{now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' })}</div>
           </div>
           {(() => {
             const onHold = isOnHold(timeline)
@@ -558,15 +558,15 @@ export default function ShowDayTab({ sheetId, productionCode, production, sessio
             const liveHeldMs = getHeldMs(timeline, now.getTime())
             return (
               <>
-                <div style={{ fontSize: 44, fontWeight: 900, color: onHold ? '#fbbf24' : '#fff', fontVariantNumeric: 'tabular-nums', textAlign: 'center', lineHeight: 1, marginBottom: 4 }}>
+                <div style={{ fontSize: 44, fontWeight: 900, color: onHold ? 'var(--amber-text)' : 'var(--text)', fontVariantNumeric: 'tabular-nums', textAlign: 'center', lineHeight: 1, marginBottom: 4 }}>
                   {fmtMsLong(liveMs)}
                 </div>
                 {onHold ? (
-                  <p style={{ fontSize: 12, color: '#fbbf24', textAlign: 'center', margin: '0 0 8px', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase' }}>
+                  <p style={{ fontSize: 12, color: 'var(--amber-text)', textAlign: 'center', margin: '0 0 8px', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase' }}>
                     ⏸ HELD · {fmtMsLong(liveHeldMs)} this hold
                   </p>
                 ) : heldMs > 0 ? (
-                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', textAlign: 'center', margin: '0 0 8px' }}>
+                  <p style={{ fontSize: 11, color: 'var(--text3)', textAlign: 'center', margin: '0 0 8px' }}>
                     {fmtMsLong(heldMs)} held this act
                   </p>
                 ) : (
@@ -578,7 +578,7 @@ export default function ShowDayTab({ sheetId, productionCode, production, sessio
           <ActionPanel>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
               <button onClick={handleToggleHold}
-                style={{ background: isOnHold(timeline) ? '#059669' : 'rgba(251, 191, 36, 0.2)', border: `1px solid ${isOnHold(timeline) ? 'transparent' : 'rgba(251, 191, 36, 0.5)'}`, borderRadius: 'var(--radius)', padding: '12px', fontSize: 14, fontWeight: 700, color: isOnHold(timeline) ? '#fff' : '#fbbf24', cursor: 'pointer' }}>
+                style={{ background: isOnHold(timeline) ? 'var(--green-text)' : 'var(--amber-bg)', border: `1px solid ${isOnHold(timeline) ? 'transparent' : 'var(--amber-text)'}`, borderRadius: 'var(--radius)', padding: '12px', fontSize: 14, fontWeight: 700, color: isOnHold(timeline) ? 'var(--bg3)' : 'var(--amber-text)', cursor: 'pointer' }}>
                 {isOnHold(timeline) ? '▶ Resume' : '⏸ Hold'}
               </button>
               <button onClick={handleEndCurrentAct} disabled={isOnHold(timeline)}
@@ -600,13 +600,13 @@ export default function ShowDayTab({ sheetId, productionCode, production, sessio
       const nextActName = actShortName(nextActIdx, productionActs)
       const intLabel = totalActs > 2 ? `Intermission ${intIdx + 1}` : 'Intermission'
       return (
-        <div style={{ background: intermissionOver ? 'var(--red-text)' : '#1e1b4b', borderRadius: 'var(--radius-lg)', padding: '16px 20px', marginBottom: 14, transition: 'background 0.5s' }}>
+        <div style={{ background: intermissionOver ? 'var(--red-bg)' : 'var(--purple-bg)', border: intermissionOver ? '1.5px solid var(--red-text)' : 'none', borderRadius: 'var(--radius-lg)', padding: '16px 20px', marginBottom: 14, transition: 'background 0.5s' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
             <div>
-              <p style={{ fontSize: 13, fontWeight: 700, color: intermissionOver ? '#fff' : 'rgba(255,255,255,0.6)', margin: 0, textTransform: 'uppercase', letterSpacing: 1 }}>{intermissionOver ? `⏰ ${intLabel.toUpperCase()} OVER TIME` : intLabel}</p>
-              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', margin: 0 }}>Started {new Date(intStart).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</p>
+              <p style={{ fontSize: 13, fontWeight: 700, color: intermissionOver ? 'var(--red-text)' : 'var(--text3)', margin: 0, textTransform: 'uppercase', letterSpacing: 1 }}>{intermissionOver ? `⏰ ${intLabel.toUpperCase()} OVER TIME` : intLabel}</p>
+              <p style={{ fontSize: 11, color: intermissionOver ? 'var(--red-text)' : 'var(--text3)', margin: 0 }}>Started {new Date(intStart).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</p>
             </div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: '#fff', fontVariantNumeric: 'tabular-nums' }}>{now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' })}</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--text)', fontVariantNumeric: 'tabular-nums' }}>{now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' })}</div>
           </div>
           {(() => {
             const onHold = isOnHold(timeline)
@@ -617,28 +617,28 @@ export default function ShowDayTab({ sheetId, productionCode, production, sessio
               <div style={{ textAlign: 'center', marginBottom: 8 }}>
                 {intermissionOver ? (
                   <div>
-                    <div style={{ fontSize: 52, fontWeight: 900, color: onHold ? '#fbbf24' : '#fff', fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>
+                    <div style={{ fontSize: 52, fontWeight: 900, color: onHold ? 'var(--amber-text)' : 'var(--text)', fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>
                       +{fmtMsLong(Math.max(0, liveMs - INTERMISSION_STANDARD))}
                     </div>
-                    <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.8)', marginTop: 4 }}>over 15 minutes</p>
+                    <p style={{ fontSize: 12, color: 'var(--red-text)', marginTop: 4 }}>over 15 minutes</p>
                   </div>
                 ) : (
                   <div>
-                    <div style={{ fontSize: 52, fontWeight: 900, color: onHold ? '#fbbf24' : '#fff', fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>
+                    <div style={{ fontSize: 52, fontWeight: 900, color: onHold ? 'var(--amber-text)' : 'var(--text)', fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>
                       {fmtMsLong(liveMs)}
                     </div>
-                    <div style={{ height: 5, background: 'rgba(255,255,255,0.2)', borderRadius: 3, margin: '8px 0 0', overflow: 'hidden' }}>
-                      <div style={{ height: '100%', borderRadius: 3, width: `${Math.min(100, (liveMs / INTERMISSION_STANDARD) * 100)}%`, background: liveMs > INTERMISSION_STANDARD * 0.8 ? '#fbbf24' : '#a78bfa', transition: 'width 1s linear' }} />
+                    <div style={{ height: 5, background: 'var(--bg3)', borderRadius: 3, margin: '8px 0 0', overflow: 'hidden' }}>
+                      <div style={{ height: '100%', borderRadius: 3, width: `${Math.min(100, (liveMs / INTERMISSION_STANDARD) * 100)}%`, background: liveMs > INTERMISSION_STANDARD * 0.8 ? 'var(--amber-text)' : 'var(--purple-text)', transition: 'width 1s linear' }} />
                     </div>
-                    <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 4 }}>of standard 15:00</p>
+                    <p style={{ fontSize: 11, color: 'var(--text3)', marginTop: 4 }}>of standard 15:00</p>
                   </div>
                 )}
                 {onHold ? (
-                  <p style={{ fontSize: 12, color: '#fbbf24', textAlign: 'center', margin: '6px 0 0', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase' }}>
+                  <p style={{ fontSize: 12, color: 'var(--amber-text)', textAlign: 'center', margin: '6px 0 0', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase' }}>
                     ⏸ HELD · {fmtMsLong(liveHeldMs)} this hold
                   </p>
                 ) : heldMs > 0 ? (
-                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', textAlign: 'center', margin: '4px 0 0' }}>
+                  <p style={{ fontSize: 11, color: 'var(--text3)', textAlign: 'center', margin: '4px 0 0' }}>
                     {fmtMsLong(heldMs)} held during this intermission
                   </p>
                 ) : null}
@@ -648,11 +648,11 @@ export default function ShowDayTab({ sheetId, productionCode, production, sessio
           <ActionPanel>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
               <button onClick={handleToggleHold}
-                style={{ background: isOnHold(timeline) ? '#059669' : 'rgba(251, 191, 36, 0.2)', border: `1px solid ${isOnHold(timeline) ? 'transparent' : 'rgba(251, 191, 36, 0.5)'}`, borderRadius: 'var(--radius)', padding: '12px', fontSize: 14, fontWeight: 700, color: isOnHold(timeline) ? '#fff' : '#fbbf24', cursor: 'pointer' }}>
+                style={{ background: isOnHold(timeline) ? 'var(--green-text)' : 'var(--amber-bg)', border: `1px solid ${isOnHold(timeline) ? 'transparent' : 'var(--amber-text)'}`, borderRadius: 'var(--radius)', padding: '12px', fontSize: 14, fontWeight: 700, color: isOnHold(timeline) ? 'var(--bg3)' : 'var(--amber-text)', cursor: 'pointer' }}>
                 {isOnHold(timeline) ? '▶ Resume' : '⏸ Hold'}
               </button>
               <button onClick={handleEndIntermission} disabled={isOnHold(timeline)}
-                style={{ background: '#059669', border: 'none', borderRadius: 'var(--radius)', padding: '12px', fontSize: 14, fontWeight: 700, color: '#fff', cursor: isOnHold(timeline) ? 'not-allowed' : 'pointer', opacity: isOnHold(timeline) ? 0.4 : 1 }}>
+                style={{ background: 'var(--green-text)', border: 'none', borderRadius: 'var(--radius)', padding: '12px', fontSize: 14, fontWeight: 700, color: 'var(--bg3)', cursor: isOnHold(timeline) ? 'not-allowed' : 'pointer', opacity: isOnHold(timeline) ? 0.4 : 1 }}>
                 ▶ Call {nextActName}
               </button>
             </div>
@@ -666,11 +666,11 @@ export default function ShowDayTab({ sheetId, productionCode, production, sessio
     // DONE
     const totalActsRun = timeline.actStarts.length
     return (
-      <div style={{ background: '#0f2340', borderRadius: 'var(--radius-lg)', padding: '18px 20px', marginBottom: 14 }}>
+      <div style={{ background: 'var(--purple-bg)', borderRadius: 'var(--radius-lg)', padding: '18px 20px', marginBottom: 14 }}>
         <div style={{ textAlign: 'center', marginBottom: 16 }}>
           <p style={{ fontSize: 24, margin: 0 }}>🎉</p>
-          <p style={{ fontSize: 18, fontWeight: 800, color: '#fff', margin: '4px 0 2px' }}>Show complete!</p>
-          <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', margin: 0 }}>{production?.config?.title}{timeline.perfNum ? ` · Performance ${timeline.perfNum}` : ''}</p>
+          <p style={{ fontSize: 18, fontWeight: 800, color: 'var(--text)', margin: '4px 0 2px' }}>Show complete!</p>
+          <p style={{ fontSize: 11, color: 'var(--text3)', margin: 0 }}>{production?.config?.title}{timeline.perfNum ? ` · Performance ${timeline.perfNum}` : ''}</p>
         </div>
 
         {/* Per-act breakdown */}
@@ -687,10 +687,10 @@ export default function ShowDayTab({ sheetId, productionCode, production, sessio
               const start = timeline.actStarts[i]
               const end = timeline.actEnds[i]
               cells.push(
-                <div key={`a${i}`} style={{ background: 'rgba(255,255,255,0.08)', borderRadius: 8, padding: '10px 8px', textAlign: 'center' }}>
-                  <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)', margin: '0 0 4px', textTransform: 'uppercase', letterSpacing: 0.5 }}>{actShortName(i, productionActs)}</p>
-                  <p style={{ fontSize: 20, fontWeight: 800, color: '#fff', margin: 0, fontVariantNumeric: 'tabular-nums' }}>{start ? fmtMsLong(ms) : '—'}</p>
-                  {start && <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)', margin: '3px 0 0' }}>{new Date(start).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})} → {end ? new Date(end).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}) : '?'}</p>}
+                <div key={`a${i}`} style={{ background: 'var(--bg3)', borderRadius: 8, padding: '10px 8px', textAlign: 'center' }}>
+                  <p style={{ fontSize: 10, color: 'var(--text3)', margin: '0 0 4px', textTransform: 'uppercase', letterSpacing: 0.5 }}>{actShortName(i, productionActs)}</p>
+                  <p style={{ fontSize: 20, fontWeight: 800, color: 'var(--text)', margin: 0, fontVariantNumeric: 'tabular-nums' }}>{start ? fmtMsLong(ms) : '—'}</p>
+                  {start && <p style={{ fontSize: 9, color: 'var(--text3)', margin: '3px 0 0' }}>{new Date(start).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})} → {end ? new Date(end).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}) : '?'}</p>}
                 </div>
               )
               if (i < totalActsRun - 1) {
@@ -700,10 +700,10 @@ export default function ShowDayTab({ sheetId, productionCode, production, sessio
                 const warn = intMs > 15 * 60 * 1000
                 const intLabel = totalActsRun > 2 ? `Int. ${i + 1}` : 'Intermission'
                 cells.push(
-                  <div key={`i${i}`} style={{ background: 'rgba(255,255,255,0.08)', borderRadius: 8, padding: '10px 8px', textAlign: 'center' }}>
-                    <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)', margin: '0 0 4px', textTransform: 'uppercase', letterSpacing: 0.5 }}>{intLabel}</p>
-                    <p style={{ fontSize: 20, fontWeight: 800, color: warn ? '#fca5a5' : '#fff', margin: 0, fontVariantNumeric: 'tabular-nums' }}>{intStart ? fmtMsLong(intMs) : '—'}</p>
-                    {intStart && <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)', margin: '3px 0 0' }}>{new Date(intStart).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})} → {intEnd ? new Date(intEnd).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}) : '?'}</p>}
+                  <div key={`i${i}`} style={{ background: 'var(--bg3)', borderRadius: 8, padding: '10px 8px', textAlign: 'center' }}>
+                    <p style={{ fontSize: 10, color: 'var(--text3)', margin: '0 0 4px', textTransform: 'uppercase', letterSpacing: 0.5 }}>{intLabel}</p>
+                    <p style={{ fontSize: 20, fontWeight: 800, color: warn ? 'var(--red-text)' : 'var(--text)', margin: 0, fontVariantNumeric: 'tabular-nums' }}>{intStart ? fmtMsLong(intMs) : '—'}</p>
+                    {intStart && <p style={{ fontSize: 9, color: 'var(--text3)', margin: '3px 0 0' }}>{new Date(intStart).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})} → {intEnd ? new Date(intEnd).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}) : '?'}</p>}
                   </div>
                 )
               }
@@ -712,28 +712,28 @@ export default function ShowDayTab({ sheetId, productionCode, production, sessio
           })()}
         </div>
 
-        <div style={{ borderTop: '0.5px solid rgba(255,255,255,0.12)', paddingTop: 12, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 14 }}>
+        <div style={{ borderTop: '0.5px solid var(--border)', paddingTop: 12, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 14 }}>
           <div style={{ textAlign: 'center' }}>
-            <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)', margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: 0.5 }}>Show time</p>
-            <p style={{ fontSize: 26, fontWeight: 900, color: '#a78bfa', margin: 0, fontVariantNumeric: 'tabular-nums' }}>{fmtMsLong(getTotalActsMs(timeline))}</p>
-            <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)', margin: '2px 0 0' }}>acts only</p>
+            <p style={{ fontSize: 10, color: 'var(--text3)', margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: 0.5 }}>Show time</p>
+            <p style={{ fontSize: 26, fontWeight: 900, color: 'var(--purple-text)', margin: 0, fontVariantNumeric: 'tabular-nums' }}>{fmtMsLong(getTotalActsMs(timeline))}</p>
+            <p style={{ fontSize: 9, color: 'var(--text3)', margin: '2px 0 0' }}>acts only</p>
           </div>
           <div style={{ textAlign: 'center' }}>
-            <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)', margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: 0.5 }}>Total running</p>
-            <p style={{ fontSize: 26, fontWeight: 900, color: '#fff', margin: 0, fontVariantNumeric: 'tabular-nums' }}>{fmtMsLong(getTotalShowMs(timeline))}</p>
-            <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)', margin: '2px 0 0' }}>{totalActsRun > 1 ? 'including intermission(s)' : 'top to bottom'}</p>
+            <p style={{ fontSize: 10, color: 'var(--text3)', margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: 0.5 }}>Total running</p>
+            <p style={{ fontSize: 26, fontWeight: 900, color: 'var(--text)', margin: 0, fontVariantNumeric: 'tabular-nums' }}>{fmtMsLong(getTotalShowMs(timeline))}</p>
+            <p style={{ fontSize: 9, color: 'var(--text3)', margin: '2px 0 0' }}>{totalActsRun > 1 ? 'including intermission(s)' : 'top to bottom'}</p>
           </div>
         </div>
         {(timeline.totalHoldMs || 0) > 0 && (
-          <div style={{ textAlign: 'center', padding: '8px 12px', background: 'rgba(251, 191, 36, 0.12)', borderRadius: 8, marginBottom: 10 }}>
-            <p style={{ fontSize: 11, color: '#fbbf24', margin: 0 }}>
+          <div style={{ textAlign: 'center', padding: '8px 12px', background: 'var(--amber-bg)', borderRadius: 8, marginBottom: 10 }}>
+            <p style={{ fontSize: 11, color: 'var(--amber-text)', margin: 0 }}>
               ⏸ {fmtMsLong(timeline.totalHoldMs)} on hold during this run
             </p>
           </div>
         )}
         {isController && (
           <button onClick={resetTimeline}
-            style={{ width: '100%', background: 'none', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 'var(--radius)', padding: '8px 14px', color: 'rgba(255,255,255,0.6)', fontSize: 12, cursor: 'pointer' }}>
+            style={{ width: '100%', background: 'none', border: '1px solid var(--border2)', borderRadius: 'var(--radius)', padding: '8px 14px', color: 'var(--text2)', fontSize: 12, cursor: 'pointer' }}>
             Reset for next performance
           </button>
         )}

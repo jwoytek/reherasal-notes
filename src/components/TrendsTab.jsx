@@ -10,8 +10,8 @@ function Bar({ value, max, color }) {
 }
 
 const CAT_COLORS = {
-  blocking: '#ba7517', performance: '#7f77dd', music: '#1d9e75',
-  technical: '#d85a30', general: '#639922', costume: '#d4537e', set: '#378add'
+  blocking: '#f6d67e', performance: '#a78bfa', music: '#9fe1cb',
+  technical: '#f0997b', general: '#8fe0a6', costume: '#ed93b1', set: '#85b7eb'
 }
 
 export default function TrendsTab({ notes }) {
@@ -106,7 +106,7 @@ export default function TrendsTab({ notes }) {
             return (
               <div key={cat} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <span style={{ fontSize: 12, color: 'var(--text2)', minWidth: 90, textTransform: 'capitalize' }}>{cat}</span>
-                <Bar value={count} max={maxCat} color={CAT_COLORS[cat] || '#888'} />
+                <Bar value={count} max={maxCat} color={CAT_COLORS[cat] || 'var(--text3)'} />
                 <span style={{ fontSize: 12, fontWeight: 500, minWidth: 24, textAlign: 'right' }}>{count}</span>
               </div>
             )
@@ -122,7 +122,7 @@ export default function TrendsTab({ notes }) {
             {stats.topCast.map(([name, data]) => (
               <div key={name} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <span style={{ fontSize: 12, color: 'var(--text2)', minWidth: 130, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{name}</span>
-                <Bar value={data.total} max={stats.maxCast} color="#7f77dd" />
+                <Bar value={data.total} max={stats.maxCast} color="var(--purple-text)" />
                 <span style={{ fontSize: 12, fontWeight: 500, minWidth: 24, textAlign: 'right' }}>{data.total}</span>
                 {data.open > 0 && (
                   <span style={{ fontSize: 11, padding: '1px 7px', borderRadius: 20, background: data.high > 0 ? 'var(--red-bg)' : 'var(--amber-bg)', color: data.high > 0 ? 'var(--red-text)' : 'var(--amber-text)', whiteSpace: 'nowrap' }}>

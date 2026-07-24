@@ -16,7 +16,7 @@ const CAT_COLORS = {
   script: { bg: 'var(--blue-bg)', text: 'var(--blue-text)' },
   music: { bg: 'var(--teal-bg)', text: 'var(--teal-text)' },
   blocking: { bg: 'var(--amber-bg)', text: 'var(--amber-text)' },
-  costume: { bg: 'var(--pink-bg, #fbeaf0)', text: 'var(--pink-text, #72243e)' },
+  costume: { bg: 'rgba(212,83,126,0.18)', text: '#ed93b1' },
   props: { bg: 'var(--coral-bg)', text: 'var(--coral-text)' },
   technical: { bg: 'var(--coral-bg)', text: 'var(--coral-text)' },
   marketing: { bg: 'var(--purple-bg)', text: 'var(--purple-text)' },
