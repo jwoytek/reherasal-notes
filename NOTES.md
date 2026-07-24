@@ -3,8 +3,32 @@
 - Hosting ?
     - Stick with Netlify for now
     - Consider AWS for future expansion
+- Organizational rearchitecture
+    - New top-level is Organization
+    - One org may have zero to many Productions
+    - One org may have zero to one Office Management area
 - Authentication updates
-
+    - Netlify Identity for "local" users
+    - Allow use of other oauth providers (FB, Gmail, etc.)
+    - Account Roles
+        - Organization Admin
+        - Production Roles
+            - Admin (current level)
+                - Director
+                - Stage Manager
+            - Member
+                - MD 
+                - LX
+                - Sound
+                - Choreo
+                - etc.
+            - Shared
+                - Randos
+        - Office Management Roles (all have some access inside of a production as well, for notes, etc.)
+            - Company/club officers
+                - Read-only on financials
+            - Treasurer permission flag
+                - Read/Write on financials
 - Timer improvements
 - Configurable sidebar/modules
     - Enable admin type user to configure which components are visible for users
